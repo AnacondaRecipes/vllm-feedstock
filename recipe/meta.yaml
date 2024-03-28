@@ -1,0 +1,51 @@
+{% set name = "vllm" %}
+{% set version = "0.3.3" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 24b70159bbcfd441bfa9d3e226ba8f5db74837c5325fea4a2104cf46c5d8246e
+
+build:
+  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  number: 0
+
+requirements:
+  host:
+    - python
+    - ninja
+    - packaging
+    - setuptools
+    - pytorch >=2.1.2
+    - wheel
+    - pip
+  run:
+    - python
+    - pytorch >=2.1.2
+
+test:
+  imports:
+    - vllm
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/vllm-project/vllm/tree/v0.3.3
+  summary: vLLM is a fast and easy-to-use library for LLM inference and serving.
+  description: A high-throughput and memory-efficient inference and serving engine for LLMs.
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - csrc/punica/LICENSE
+    - csrc/quantization/marlin/LICENSE
+  doc_url: https://docs.vllm.ai
+  dev_url: https://github.com/vllm-project/vllm/tree/v0.3.3
+
+extra:
+  recipe-maintainers:
+    - boldorider4

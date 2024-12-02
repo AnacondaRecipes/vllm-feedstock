@@ -10,7 +10,9 @@ source:
   sha256: 24b70159bbcfd441bfa9d3e226ba8f5db74837c5325fea4a2104cf46c5d8246e
 
 build:
-  script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  script: |
+    export CUDA_HOME=${CUDA_HOME:-/usr/local/cuda}
+    {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   number: 0
 
 requirements:

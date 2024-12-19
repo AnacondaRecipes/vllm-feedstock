@@ -24,11 +24,11 @@ requirements:
     - pytorch >=2.1.2
     - wheel
     - pip
-    - cudatoolkit
+#    - cudatoolkit
   run:
     - python
     - pytorch >=2.1.2
-    - cudatoolkit
+#    - cudatoolkit
 
 test:
   imports:

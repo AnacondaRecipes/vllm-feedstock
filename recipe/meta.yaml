@@ -16,6 +16,14 @@ build:
     #export CUDA_HOME=$SRC_DIR
     # {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   number: 0
+  missing_dso_whitelist:
+    - '*/libcudart.so.12'
+    - '*/libtorch_cuda.so'
+    - '*/libc10_cuda.so'
+    - '*/libcudart.so.12'
+    - '*/libc.so.6'
+    - '*/libcuda.so.1'
+    - '*/ld-linux-x86-64.so.2'
 
 requirements:
   host:

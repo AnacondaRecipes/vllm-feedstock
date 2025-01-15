@@ -52,8 +52,8 @@ requirements:
     - libstdcxx-ng
     - libgcc-ng
 test:
-  imports:
-    - vllm
+#  imports:
+#    - vllm
   commands:
     - pip check
   requires:

@@ -42,13 +42,13 @@ requirements:
     - mistral_common
   run:
     - python
-    #- pytorch
-    #- cudatoolkit
+    - pytorch
+    - cudatoolkit
     - transformers
     - psutil
-    #- msgspec
+    - msgspec
     - pydantic
-    #- mistral_common
+    - mistral_common
     - libstdcxx-ng
     - libgcc-ng
 test:

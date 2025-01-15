@@ -23,24 +23,24 @@ requirements:
     - ninja
     - packaging
     - setuptools
-    - pytorch >=2.3.1
+    - pytorch
     - wheel
     - pip
     - cudatoolkit
     - transformers
     - psutil
-    - msgspec >=0.19
+    - msgspec
     - pydantic
-      #    - mistral_common
+    - mistral_common
   run:
     - python
-    - pytorch >=2.1.2
+    - pytorch
     - cudatoolkit
     - transformers
     - psutil
-    - msgspec >=0.19
+    - msgspec
     - pydantic
-      #   - mistral_common
+    - mistral_common
 test:
   imports:
     - vllm

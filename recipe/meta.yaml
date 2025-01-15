@@ -40,6 +40,7 @@ requirements:
     - msgspec
     - pydantic
     - mistral_common
+    - pillow
   run:
     - python
     - pytorch
@@ -51,6 +52,7 @@ requirements:
     - mistral_common
     - libstdcxx-ng
     - libgcc-ng
+    - pillow
 test:
 #  imports:
 #    - vllm

@@ -25,6 +25,7 @@ requirements:
     - make
     - git
     - libnuma                  # Needed for <numa.h> and linking -lnuma
+    - libtorch=*=*cpu*
   host:
     - python
     - cmake

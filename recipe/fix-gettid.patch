@@ -1,5 +1,5 @@
---- csrc/cpu/utils.cpp.orig	2024-05-01 12:00:00.000000000 +0000
-+++ csrc/cpu/utils.cpp	2024-05-01 12:01:00.000000000 +0000
+--- a/csrc/cpu/utils.cpp
++++ b/csrc/cpu/utils.cpp
 @@ -1,6 +1,8 @@
  #include "cpu_utils.h"
  #include <omp.h>

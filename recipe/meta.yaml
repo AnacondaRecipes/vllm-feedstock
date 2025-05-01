@@ -37,7 +37,7 @@ requirements:
     - numpy 
     - requests 
     - tqdm
-    - blake3
+    - blake3    # [python == "3.9" or python == "3.10"]
     - py-cpuinfo
     - transformers
     - tokenizers 
@@ -67,7 +67,7 @@ requirements:
     - setuptools   # [py>311]
     - einops
     - compressed-tensors
-    - depyf 
+    #- depyf 
     - cloudpickle
     - watchfiles
     - python-json-logger

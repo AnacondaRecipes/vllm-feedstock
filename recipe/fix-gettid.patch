@@ -6,10 +6,10 @@
  #include <thread>
 +#include <unistd.h>
 +#include <sys/syscall.h>
- 
+
  std::string init_cpu_threads_env(const std::string& cpu_threads_str) {
      ...
-@@ -84,7 +86,7 @@
+@@ -84,7 +86,7 @@ std::string init_cpu_threads_env(const std::string& cpu_threads_str) {
          if (omp_cpu_ids[i] != -1) {
 -            thread_core_mapping.emplace_back(gettid(), omp_cpu_ids[i]);
 +            thread_core_mapping.emplace_back(syscall(SYS_gettid), omp_cpu_ids[i]);

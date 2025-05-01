@@ -21,6 +21,7 @@ requirements:
     - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
     - cmake
     - make
+    - git
     - libnuma                  # Needed for <numa.h> and linking -lnuma
   host:
     - python

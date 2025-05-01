@@ -1,77 +1,103 @@
 {% set name = "vllm" %}
-{% set version = "0.6.4.post1" %}
+{% set version = "0.8.1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://files.pythonhosted.org/packages/06/ab/2d562d5d4475f1a071b831564971752c085830793a6d9033383926d5eb9c/vllm-0.6.4.post1-cp38-abi3-manylinux1_x86_64.whl
-  sha256: dc151793688376904ca54129a4aa0b83aed9d7ad8e458666775f62b37ecbddcc
-    #  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-    #  sha256: 24b70159bbcfd441bfa9d3e226ba8f5db74837c5325fea4a2104cf46c5d8246e
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
+  sha256: 03d641f10d0181b630243c096484da0b5fdf608befe026af831ab87a51c09ab1
 
 build:
-  # script: |
-    #export CUDA_HOME=$SRC_DIR
-    # {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+  skip: true  # [py<39]
+  entry_points:
+    - vllm = vllm.entrypoints.cli.main:main
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
-  missing_dso_whitelist:
-    - '*/libcudart.so.12'
-    - '*/libtorch_cuda.so'
-    - '*/libc10_cuda.so'
-    - '*/libcudart.so.12'
-    - '*/libc.so.6'
-    - '*/libcuda.so.1'
-    - '*/ld-linux-x86-64.so.2'
 
 requirements:
   host:
-    - python
+    - python 
+    - cmake 
     - ninja
     - packaging
     - setuptools
-    - pytorch
+    - setuptools-scm 
+    - pytorch=*=*cpu*
     - wheel
+    - jinja2
     - pip
-    - cudatoolkit
-    - transformers
-    - psutil
-    - msgspec
-    - pydantic
-    - mistral_common
-    - pillow
+    - libnuma
   run:
     - python
-    - pytorch
-    - cudatoolkit
-    - transformers
+    - cachetools
     - psutil
-    - msgspec
-    - pydantic
-    - mistral_common
-    - libstdcxx-ng
-    - libgcc-ng
+    - sentencepiece
+    - numpy 
+    - requests 
+    - tqdm
+    - blake3
+    - py-cpuinfo
+    - transformers
+    - tokenizers 
+    - protobuf
+    - fastapi 
+    - aiohttp
+    - openai 
+    - pydantic 
+    - prometheus_client 
     - pillow
+    - prometheus-fastapi-instrumentator 
+    - tiktoken 
+    - lm-format-enforcer 
+    - outlines 
+    - lark 
+      #- xgrammar
+    - typing_extensions
+    - filelock 
+    - partial-json-parser
+    - pyzmq
+    - msgspec
+    - gguf
+    - importlib-metadata
+    - mistral_common 
+    - pyyaml
+    - six   # [py>311]
+    - setuptools   # [py>311]
+    - einops
+    - compressed-tensors
+    - depyf 
+    - cloudpickle
+    - watchfiles
+    - python-json-logger
+    - scipy
+    - ninja
+    - numba 
+    - ray 
+    - pytorch=*=*cpu*
+    - libtorch=*=*cpu*
+    - torchaudio 
+    - torchvision 
+    - xformers ==0.0.29.post1  # [linux]
+    - libnuma
+
 test:
-#  imports:
-#    - vllm
+  imports:
+    - vllm
   commands:
     - pip check
+    - vllm --help
   requires:
     - pip
 
 about:
-  home: https://github.com/vllm-project/vllm/tree/v0.3.3
-  summary: vLLM is a fast and easy-to-use library for LLM inference and serving.
-  description: A high-throughput and memory-efficient inference and serving engine for LLMs.
+  summary: A high-throughput and memory-efficient inference and serving engine for LLMs
   license: Apache-2.0
-    #  license_file:
-    #- LICENSE
-    #- csrc/punica/LICENSE
-    #- csrc/quantization/marlin/LICENSE
-  doc_url: https://docs.vllm.ai
-  dev_url: https://github.com/vllm-project/vllm/tree/v0.3.3
+  license_file:
+    - LICENSE
+    - csrc/quantization/marlin/sparse/LICENSE
+    - csrc/quantization/marlin/dense/LICENSE
 
 extra:
   anaconda-services:
@@ -79,5 +105,3 @@ extra:
     reason: Client request
   recipe-maintainers:
     - ianaobi
-  recipe-maintainers:
-    - boldorider4

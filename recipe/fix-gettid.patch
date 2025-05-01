@@ -1,17 +1,15 @@
-diff --git a/csrc/cpu/utils.cpp b/csrc/cpu/utils.cpp
-index abcdef0..1234567 100644
---- a/csrc/cpu/utils.cpp
-+++ b/csrc/cpu/utils.cpp
+--- csrc/cpu/utils.cpp.orig	2024-05-01 12:00:00.000000000 +0000
++++ csrc/cpu/utils.cpp	2024-05-01 12:01:00.000000000 +0000
 @@ -1,6 +1,8 @@
  #include "cpu_utils.h"
  #include <omp.h>
  #include <thread>
 +#include <unistd.h>
 +#include <sys/syscall.h>
-
+ 
  std::string init_cpu_threads_env(const std::string& cpu_threads_str) {
      ...
-@@ -84,7 +86,7 @@ std::string init_cpu_threads_env(const std::string& cpu_threads_str) {
+@@ -84,7 +86,7 @@
          if (omp_cpu_ids[i] != -1) {
 -            thread_core_mapping.emplace_back(gettid(), omp_cpu_ids[i]);
 +            thread_core_mapping.emplace_back(syscall(SYS_gettid), omp_cpu_ids[i]);

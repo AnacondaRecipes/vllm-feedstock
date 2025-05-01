@@ -34,6 +34,7 @@ requirements:
     - jinja2
     - pip
     - libnuma                  # Ensures libnuma.so is available for linking
+    - sleef
 
   run:
     - python
@@ -87,6 +88,7 @@ requirements:
     - torchvision 
     - xformers ==0.0.29.post1  # [linux]
     - libnuma
+    - sleef
 
 test:
   imports:

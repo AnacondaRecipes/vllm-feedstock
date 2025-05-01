@@ -17,18 +17,24 @@ build:
   number: 0
 
 requirements:
+  build:
+    - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
+    - cmake
+    - make
+    - libnuma                  # Needed for <numa.h> and linking -lnuma
   host:
-    - python 
-    - cmake 
+    - python
+    - cmake
     - ninja
     - packaging
     - setuptools
-    - setuptools-scm 
+    - setuptools-scm
     - pytorch=*=*cpu*
     - wheel
     - jinja2
     - pip
-    - libnuma
+    - libnuma                  # Ensures libnuma.so is available for linking
+
   run:
     - python
     - cachetools

@@ -50,7 +50,7 @@ requirements:
     - numpy 
     - requests 
     - tqdm
-    #- blake3
+    - blake3
     - py-cpuinfo
     - transformers
     - tokenizers 

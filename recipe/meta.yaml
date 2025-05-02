@@ -50,7 +50,7 @@ requirements:
     - numpy 
     - requests 
     - tqdm
-    - blake3    # [python == "3.9" or python == "3.10"]
+    #- blake3
     - py-cpuinfo
     - transformers
     - tokenizers 

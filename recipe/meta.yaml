@@ -10,7 +10,7 @@ source:
   sha256: c7e04d1046304397b4580334038b558fe491af155fdea508224f140172cf9a82
 
 build:
-  skip: true  # [py>=313 or py2k]
+ # skip: true  # [py>=313 or py2k]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation

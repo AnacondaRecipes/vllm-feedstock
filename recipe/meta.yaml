@@ -1,5 +1,5 @@
 {% set name = "vllm" %}
-{% set version = "0.8.5" %}
+{% set version = "0.8.1" %}
 
 package:
   name: {{ name|lower }}
@@ -7,63 +7,75 @@ package:
 
 source:
   url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
-  sha256: c7e04d1046304397b4580334038b558fe491af155fdea508224f140172cf9a82
+  sha256: 03d641f10d0181b630243c096484da0b5fdf608befe026af831ab87a51c09ab1
+  #patches:
+  #  - fix-gettid.patch
 
 build:
- # skip: true  # [py>=313 or py2k]
+  skip: true  # [py<39]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  #script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
 
 requirements:
+  build:
+    - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
+    - cmake
+    - make
+    - git
+    - libnuma                  # Needed for <numa.h> and linking -lnuma
+    #- libtorch=*=*cpu*
+
   host:
     - python
     - cmake
     - ninja
     - packaging
-    - setuptools 
+    - setuptools
     - setuptools-scm
-      #- pytorch ==2.6.0
+    - pytorch=*=*cpu*
     - wheel
     - jinja2
     - pip
+    - libnuma                  # Ensures libnuma.so is available for linking
+    - sleef
+    #- libtorch=*=*cpu*  
+    - libtorch
+
   run:
     - python
     - cachetools
     - psutil
     - sentencepiece
-    - numpy
-    - requests
+    - numpy 
+    - requests 
     - tqdm
     - blake3
     - py-cpuinfo
     - transformers
-    - huggingface_hub
-    - tokenizers
+    - tokenizers 
     - protobuf
-    - fastapi
+    - fastapi 
     - aiohttp
-    - openai
-    - pydantic
-    - prometheus_client
+    - openai 
+    - pydantic 
+    - prometheus_client 
     - pillow
-    - prometheus-fastapi-instrumentator
+    - prometheus-fastapi-instrumentator 
     - tiktoken 
-    - lm-format-enforcer
-    #- llguidance 
+    - lm-format-enforcer 
     - outlines 
-    - lark
-    - xgrammar
+    - lark 
+      #- xgrammar
     - typing_extensions
-    - filelock
+    - filelock 
     - partial-json-parser
-    - pyzmq 
+    - pyzmq
     - msgspec
-    - gguf 
+    - gguf
     - importlib-metadata
-    #- mistral-common
-    - opencv
+    - mistral_common 
     - pyyaml
     - six   # [py>311]
     - setuptools   # [py>311]
@@ -75,17 +87,16 @@ requirements:
     - python-json-logger
     - scipy
     - ninja
-    - opentelemetry-sdk 
-    - opentelemetry-api
-    - opentelemetry-exporter-otlp
-    #- opentelemetry-semantic-conventions-ai
-    - numba ==0.60.0  # [py==39]
-    #- ray !=2.44.*,>=2.43.0
-    - ray
+    - numba 
+    - ray 
     - pytorch=*=*cpu*
-    - torchaudio
-    - torchvision
-    - xformers   ==0.0.29.post1  # [linux]
+    #- libtorch=*=*cpu*
+    - libtorch
+    - torchaudio 
+    - torchvision 
+    - xformers ==0.0.29.post1  # [linux]
+    - libnuma
+    - sleef
 
 test:
   imports:
@@ -110,4 +121,3 @@ extra:
     reason: Client request
   recipe-maintainers:
     - ianaobi
-    - bkreider

@@ -53,7 +53,7 @@ requirements:
     - tqdm
     - blake3 
     - py-cpuinfo
-    - transformers
+    - transformers >4.21.0
     - tokenizers 
     - protobuf
     - fastapi 

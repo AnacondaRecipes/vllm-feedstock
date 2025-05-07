@@ -18,7 +18,7 @@ build:
 
 requirements:
   host:
-    - python >=3.9,<3.13
+    - python
     - cmake
     - ninja
     - packaging
@@ -29,7 +29,7 @@ requirements:
     - jinja2
     - pip
   run:
-    - python >=3.9,<3.13
+    - python
     - cachetools
     - psutil
     - sentencepiece
@@ -65,8 +65,8 @@ requirements:
     - mistral-common
     - opencv
     - pyyaml
-    - six >=1.16.0  # [py>311]
-    - setuptools >=74.1.1  # [py>311]
+    - six   # [py>311]
+    - setuptools   # [py>311]
     - einops
     - compressed-tensors
     - depyf 
@@ -80,11 +80,12 @@ requirements:
     - opentelemetry-exporter-otlp
     - opentelemetry-semantic-conventions-ai
     - numba ==0.60.0  # [py==39]
-    - ray !=2.44.*,>=2.43.0
+    #- ray !=2.44.*,>=2.43.0
+    - ray
     - pytorch=*=*cpu*
     - torchaudio
     - torchvision
-    - xformers   # [linux]
+    - xformers   ==0.0.29.post1  # [linux]
 
 test:
   imports:

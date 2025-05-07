@@ -51,7 +51,7 @@ requirements:
     - prometheus-fastapi-instrumentator
     - tiktoken 
     - lm-format-enforcer
-    - llguidance 
+    #- llguidance 
     - outlines 
     - lark
     - xgrammar
@@ -62,14 +62,14 @@ requirements:
     - msgspec
     - gguf 
     - importlib-metadata
-    - mistral-common
+    #- mistral-common
     - opencv
     - pyyaml
     - six   # [py>311]
     - setuptools   # [py>311]
     - einops
     - compressed-tensors
-    - depyf 
+    #- depyf 
     - cloudpickle
     - watchfiles
     - python-json-logger
@@ -78,7 +78,7 @@ requirements:
     - opentelemetry-sdk 
     - opentelemetry-api
     - opentelemetry-exporter-otlp
-    - opentelemetry-semantic-conventions-ai
+    #- opentelemetry-semantic-conventions-ai
     - numba ==0.60.0  # [py==39]
     #- ray !=2.44.*,>=2.43.0
     - ray

@@ -81,7 +81,7 @@ requirements:
     - opentelemetry-semantic-conventions-ai
     - numba ==0.60.0  # [py==39]
     - ray !=2.44.*,>=2.43.0
-      #- pytorch ==2.6.0
+    - pytorch=*=*cpu*
     - torchaudio
     - torchvision
     - xformers   # [linux]

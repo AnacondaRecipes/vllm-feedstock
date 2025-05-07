@@ -51,7 +51,7 @@ requirements:
     - numpy 
     - requests 
     - tqdm
-    - blake3 ==0.2.1
+    - blake3 
     - py-cpuinfo
     - transformers
     - tokenizers 
@@ -121,3 +121,4 @@ extra:
     reason: Client request
   recipe-maintainers:
     - ianaobi
+    - bkreider

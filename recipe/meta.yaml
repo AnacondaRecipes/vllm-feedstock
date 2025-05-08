@@ -26,6 +26,7 @@ requirements:
     - git
     - libnuma                  # Needed for <numa.h> and linking -lnuma
     #- libtorch=*=*cpu*
+    - ninja
 
   host:
     - python
@@ -47,7 +48,7 @@ requirements:
     - python
     - cachetools
     - psutil
-    - sentencepiece
+    - sentencepiece ==0.2.0
     - numpy 
     - requests 
     - tqdm
@@ -61,13 +62,13 @@ requirements:
     - openai 
     - pydantic 
     - prometheus_client 
-    - pillow
+    - pillow <11.0.0
     - prometheus-fastapi-instrumentator 
-    - tiktoken 
+    - tiktoken ==0.7.0
     - lm-format-enforcer 
     - outlines 
     - lark 
-      #- xgrammar
+    - xgrammar
     - typing_extensions
     - filelock 
     - partial-json-parser

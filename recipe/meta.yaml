@@ -27,6 +27,11 @@ requirements:
     #- libnuma                  # Needed for <numa.h> and linking -lnuma
     #- libtorch=*=*cpu*
     - ninja
+    - python
+    - pip
+    - setuptools
+    - wheel
+    
 
   host:
     - python

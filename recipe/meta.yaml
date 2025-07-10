@@ -41,7 +41,7 @@ requirements:
     - libnuma                  # Ensures libnuma.so is available for linking
     - sleef
     - libtorch=*=*cpu*  
-    - libtorch
+    #- libtorch
 
   run:
     - python

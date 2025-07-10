@@ -25,7 +25,7 @@ requirements:
     - make
     - git
     - libnuma                  # Needed for <numa.h> and linking -lnuma
-    #- libtorch=*=*cpu*
+    - libtorch=*=*cpu*
 
   host:
     - python
@@ -40,7 +40,7 @@ requirements:
     - pip
     - libnuma                  # Ensures libnuma.so is available for linking
     - sleef
-    #- libtorch=*=*cpu*  
+    - libtorch=*=*cpu*  
     - libtorch
 
   run:

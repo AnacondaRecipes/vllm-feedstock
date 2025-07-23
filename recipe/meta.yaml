@@ -99,9 +99,9 @@ requirements:
     - pytorch=*=*cpu*
     #- libtorch=*=*cpu*
     - libtorch
-    - torchaudio 
+    # temp: - torchaudio 
     - torchvision 
-    #- xformers ==0.0.29.post1  # [linux]
+    # temp: - xformers ==0.0.29.post1  # [linux]
     #- libnuma
     - sleef
 

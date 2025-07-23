@@ -24,7 +24,7 @@ requirements:
     - cmake
     - make
     - git
-    #- libnuma                  # Needed for <numa.h> and linking -lnuma
+    - libnuma                  # Needed for <numa.h> and linking -lnuma
     - libtorch=*=*cpu*
     - ninja
     - python
@@ -45,7 +45,7 @@ requirements:
     - wheel
     - jinja2
     - pip
-    #- libnuma                  # Ensures libnuma.so is available for linking
+    - libnuma                  # Ensures libnuma.so is available for linking
     - sleef
     #- libtorch=*=*cpu*  
     - libtorch
@@ -102,7 +102,7 @@ requirements:
     # temp: - torchaudio 
     - torchvision 
     # temp: - xformers ==0.0.29.post1  # [linux]
-    #- libnuma
+    - libnuma
     - sleef
 
 test:

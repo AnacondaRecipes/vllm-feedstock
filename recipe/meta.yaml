@@ -101,7 +101,7 @@ requirements:
     - libtorch
     - torchaudio 
     - torchvision 
-    - xformers ==0.0.29.post1  # [linux]
+    #- xformers ==0.0.29.post1  # [linux]
     #- libnuma
     - sleef
 

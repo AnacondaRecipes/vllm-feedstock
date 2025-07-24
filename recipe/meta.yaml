@@ -72,7 +72,7 @@ requirements:
     - prometheus-fastapi-instrumentator 
     - tiktoken ==0.7.0
     - lm-format-enforcer 
-    - outlines 
+    - outlines ==0.1.11
     - lark 
     - xgrammar
     - typing_extensions

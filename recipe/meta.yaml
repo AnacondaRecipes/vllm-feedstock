@@ -104,7 +104,7 @@ requirements:
     # temp: - xformers ==0.0.29.post1  # [linux]
     - libnuma
     - sleef
-    - email-validator ==1.2.1
+    - email-validator ==1.2.1   # [py310]
 
 test:
   imports:

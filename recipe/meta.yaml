@@ -54,7 +54,7 @@ requirements:
     - python
     - cachetools
     - psutil
-    - sentencepiece ==0.2.0
+    - sentencepiece 
     - numpy 
     - requests 
     - tqdm
@@ -87,7 +87,7 @@ requirements:
     - six   # [py>311]
     - setuptools   # [py>311]
     - einops
-    - compressed-tensors
+    - compressed-tensors ==0.9.2
     - depyf ==0.18.0
     - cloudpickle
     - watchfiles

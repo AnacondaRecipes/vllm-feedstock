@@ -104,6 +104,7 @@ requirements:
     # temp: - xformers ==0.0.29.post1  # [linux]
     - libnuma
     - sleef
+    - email-validator
 
 test:
   imports:

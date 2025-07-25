@@ -66,7 +66,7 @@ requirements:
     - fastapi >0.115.0 
     - aiohttp
     - openai 
-    - pydantic >=2.0 
+    - pydantic
     - prometheus_client 
     - pillow <11.0.0
     - prometheus-fastapi-instrumentator 

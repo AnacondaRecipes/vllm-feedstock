@@ -88,7 +88,7 @@ requirements:
     - setuptools   # [py>311]
     - einops
     - compressed-tensors
-    - depyf 
+    - depyf ==0.18.0
     - cloudpickle
     - watchfiles
     - python-json-logger

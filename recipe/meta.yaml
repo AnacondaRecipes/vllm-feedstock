@@ -54,7 +54,7 @@ requirements:
     - python
     - cachetools
     - psutil
-    - sentencepiece
+    - sentencepiece ==0.2.0
     - numpy 
     - requests 
     - tqdm

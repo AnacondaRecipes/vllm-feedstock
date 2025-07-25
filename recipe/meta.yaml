@@ -63,7 +63,7 @@ requirements:
     - transformers
     - tokenizers 
     - protobuf
-    - fastapi 
+    - fastapi >0.115.0 
     - aiohttp
     - openai 
     - pydantic 

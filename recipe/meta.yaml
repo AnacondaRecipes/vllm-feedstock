@@ -108,7 +108,7 @@ requirements:
     - libnuma
     - sleef
     - email_validator ==1.2.1
-    #- email-validator ==1.2.1   # [py310]
+    - email-validator ==1.2.1 
     - torchaudio
 
 test:

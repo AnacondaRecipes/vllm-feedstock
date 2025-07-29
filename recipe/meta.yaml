@@ -47,8 +47,8 @@ requirements:
     - pip
     - libnuma                  # Ensures libnuma.so is available for linking
     - sleef
-    #- libtorch=*=*cpu*  
-    - libtorch
+    - libtorch=*=*cpu*  
+    #- libtorch
 
   run:
     - python
@@ -97,15 +97,17 @@ requirements:
     - numba 
     - ray 
     - pytorch=*=*cpu*
-    #- libtorch=*=*cpu*
-    - libtorch
+    - libtorch=*=*cpu*
+    #- libtorch
     # temp: - torchaudio 
-    - torchvision 
+    #- torchvision 
+    - torchvision=*=*cpu*
     # temp: - xformers ==0.0.29.post1  # [linux]
     - libnuma
     - sleef
     #- email-validator ==1.2.1   # [py310]
-    - torchaudio
+    #- torchaudio
+    - torchaudio=*=*cpu*
 
 test:
   imports:

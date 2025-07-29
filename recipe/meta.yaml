@@ -119,6 +119,7 @@ test:
     - vllm --help
   requires:
     - pip
+    - ninja
 
 about:
   summary: A high-throughput and memory-efficient inference and serving engine for LLMs

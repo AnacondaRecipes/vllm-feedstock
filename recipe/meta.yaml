@@ -97,7 +97,8 @@ requirements:
     - numba 
     - ray 
     - pytorch=*=*cpu*
-    - libtorch=*=*cpu*
+    #- libtorch=*=*cpu*
+    - libtorch=2.6.0=cpu_mkl_h881e62d_106
     #- libtorch
     # temp: - torchaudio 
     - torchvision 

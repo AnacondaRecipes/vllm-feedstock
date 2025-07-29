@@ -19,6 +19,8 @@ build:
   number: 0
 
 requirements:
+  run_constrained:
+    - cudnn <0.0.0
   build:
     - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
     - cmake

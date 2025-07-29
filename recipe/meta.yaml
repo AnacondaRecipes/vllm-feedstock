@@ -56,7 +56,7 @@ requirements:
     - python
     - cachetools
     - psutil
-    - sentencepiece 
+    - sentencepiece ==0.2.0
     - numpy 
     - requests 
     - tqdm
@@ -65,10 +65,10 @@ requirements:
     - transformers
     - tokenizers 
     - protobuf
-    - fastapi ==0.115.9 
+    - fastapi
     - aiohttp
     - openai 
-    - pydantic ==2.5.3
+    - pydantic
     - prometheus_client 
     - pillow <11.0.0
     - prometheus-fastapi-instrumentator 
@@ -107,8 +107,8 @@ requirements:
     # temp: - xformers ==0.0.29.post1  # [linux]
     - libnuma
     - sleef
-    - email_validator ==1.2.1
-    - email-validator ==1.2.1 
+    #- email_validator ==1.2.1
+    #- email-validator ==1.2.1 
     - torchaudio
 
 test:

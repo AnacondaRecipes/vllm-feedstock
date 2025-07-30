@@ -110,6 +110,7 @@ requirements:
     #- email_validator ==1.2.1
     #- email-validator ==1.2.1 
     - torchaudio
+    - uvloop
 
 test:
   imports:
@@ -121,7 +122,7 @@ test:
   requires:
     - pip
     - ninja
-
+    - uvloop
 about:
   summary: A high-throughput and memory-efficient inference and serving engine for LLMs
   license: Apache-2.0

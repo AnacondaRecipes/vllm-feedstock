@@ -76,7 +76,7 @@ requirements:
     - lm-format-enforcer 
     - outlines ==0.1.11
     - lark 
-    - xgrammar
+    - xgrammar ==0.1.16
     - typing_extensions
     - filelock 
     - partial-json-parser

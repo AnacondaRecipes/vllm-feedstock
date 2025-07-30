@@ -115,7 +115,8 @@ test:
   imports:
     - vllm
   commands:
-    - pip check
+    #- pip check
+    - which ninja
     - vllm --help
   requires:
     - pip

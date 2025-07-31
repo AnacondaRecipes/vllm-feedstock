@@ -1,0 +1,156 @@
+#{% set name = "vllm" %}
+#{% set version = "0.8.1" %}
+
+#package:
+#  name: {{ name|lower }}
+#  version: {{ version }}
+
+#source:
+#  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
+#  sha256: 03d641f10d0181b630243c096484da0b5fdf608befe026af831ab87a51c09ab1
+#  #patches:
+#  #  - fix-gettid.patch
+
+
+{% set name = "vllm" %}
+{% set version = "0.10.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
+  sha256: a44e9013db26082a82c3931ed8772ac884d6d60566d36ecdb0e8dc01c65b241a
+
+build:
+  skip: true  # [py<39]
+  entry_points:
+    - vllm = vllm.entrypoints.cli.main:main
+  #script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  run_constrained:
+    - cudnn <0.0.0
+  build:
+    - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
+    - cmake
+    - make
+    - git
+    - libnuma                  # Needed for <numa.h> and linking -lnuma
+    - libtorch=*=*cpu*
+    - ninja
+    - python
+    - pip
+    - setuptools
+    - wheel
+    - pytorch=*=*cpu*
+    
+
+  host:
+    - python
+    - cmake
+    - ninja
+    - packaging >=24.2
+    - setuptools
+    - setuptools-scm
+    - pytorch=*=*cpu*
+    - wheel
+    - jinja2
+    - pip
+    - libnuma                  # Ensures libnuma.so is available for linking
+    - sleef
+    - libtorch=*=*cpu*  
+    #- libtorch
+
+  run:
+    - python
+    - cachetools
+    - psutil
+    - sentencepiece ==0.1.99
+    - numpy 
+    - requests 
+    - tqdm
+    - blake3
+    - py-cpuinfo
+    - transformers ==4.40.2
+    - tokenizers 
+    - protobuf
+    - fastapi ==0.115.0
+    - aiohttp
+    - openai 
+    - pydantic
+    - prometheus_client 
+    - pillow <11.0.0
+    - prometheus-fastapi-instrumentator 
+    - tiktoken ==0.7.0
+    - lm-format-enforcer 
+    - outlines ==0.1.11
+    - lark 
+    - xgrammar ==0.1.16
+    - typing_extensions
+    - filelock 
+    - partial-json-parser
+    - pyzmq
+    - msgspec
+    - gguf
+    - importlib-metadata
+    - mistral_common 
+    - pyyaml
+    - six   # [py>311]
+    - setuptools   # [py>311]
+    - einops
+    - compressed-tensors ==0.9.2
+    - depyf ==0.18.0
+    - cloudpickle
+    - watchfiles
+    - python-json-logger
+    - scipy
+    - ninja
+    - numba 
+    - ray 
+    - pytorch=*=*cpu*
+    #- libtorch=*=*cpu*
+    #- libtorch=2.6.0=cpu_mkl_h881e62d_106
+    - libtorch
+    # temp: - torchaudio 
+    - torchvision 
+    # temp: - xformers ==0.0.29.post1  # [linux]
+    - libnuma
+    - sleef
+    #- email_validator ==1.2.1
+    #- email-validator ==1.2.1 
+    - torchaudio
+    - uvloop
+    - cbor2
+    - pybase64
+
+test:
+  imports:
+    - vllm
+  commands:
+    #- pip check
+    - python -c "import transformers; print(transformers.__version__)"
+    - which ninja
+    - vllm --help
+  requires:
+    - pip
+    - ninja
+    - uvloop
+    - transformers ==4.40.2
+about:
+  summary: A high-throughput and memory-efficient inference and serving engine for LLMs
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - csrc/quantization/marlin/sparse/LICENSE
+    - csrc/quantization/marlin/dense/LICENSE
+
+extra:
+  anaconda-services:
+    ref: https://anaconda.zendesk.com/agent/tickets/49522
+    reason: Client request
+  recipe-maintainers:
+    - ianaobi
+    - bkreider

@@ -124,6 +124,7 @@ requirements:
     - torchaudio
     - uvloop
     - cbor2
+    - pybase64
 
 test:
   imports:

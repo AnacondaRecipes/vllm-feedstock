@@ -74,7 +74,7 @@ requirements:
     - tqdm
     - blake3
     - py-cpuinfo
-    - transformers >=4.40,<4.41
+    - transformers ==4.40.2
     - tokenizers 
     - protobuf
     - fastapi ==0.115.0
@@ -137,6 +137,7 @@ test:
     - pip
     - ninja
     - uvloop
+    - transformers ==4.40.2
 about:
   summary: A high-throughput and memory-efficient inference and serving engine for LLMs
   license: Apache-2.0

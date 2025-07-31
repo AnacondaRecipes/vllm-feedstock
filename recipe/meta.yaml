@@ -123,6 +123,7 @@ requirements:
     #- email-validator ==1.2.1 
     - torchaudio
     - uvloop
+    - cbor2
 
 test:
   imports:

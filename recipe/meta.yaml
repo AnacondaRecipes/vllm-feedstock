@@ -131,6 +131,7 @@ test:
     - vllm
   commands:
     #- pip check
+    - python -c "import transformers; print(transformers.__version__)"
     - which ninja
     - vllm --help
   requires:

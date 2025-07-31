@@ -52,7 +52,7 @@ requirements:
     - python
     - cmake
     - ninja
-    - packaging
+    - packaging >=24.2
     - setuptools
     - setuptools-scm
     - pytorch=*=*cpu*

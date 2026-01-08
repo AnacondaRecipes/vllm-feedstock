@@ -1,0 +1,4 @@
+cpu_or_cuda:
+ - cpu
+ #- cuda
+ 

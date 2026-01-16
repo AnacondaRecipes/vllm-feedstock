@@ -1,0 +1,46 @@
+From 98c9b1b29ff39740691b317427e3a9fffaef2624 Mon Sep 17 00:00:00 2001
+From: Sherman Siu <s8siu@uwaterloo.ca>
+Date: Sun, 31 Aug 2025 18:08:54 -0400
+Subject: [PATCH 6/6] Use PyTorch 2.7.1 to keep version number consistent
+ across builds
+
+---
+ requirements/cpu-build.txt | 2 +-
+ requirements/cpu.txt       | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/requirements/cpu-build.txt b/requirements/cpu-build.txt
+index 37f072202..62cb4d03c 100644
+--- a/requirements/cpu-build.txt
++++ b/requirements/cpu-build.txt
+@@ -6,7 +6,7 @@ packaging>=24.2
+ setuptools>=77.0.3,<80.0.0
+ setuptools-scm>=8
+ --extra-index-url https://download.pytorch.org/whl/cpu
+-torch==2.6.0+cpu
++torch==2.7.1
+ wheel
+ jinja2>=3.1.6
+ regex
+diff --git a/requirements/cpu.txt b/requirements/cpu.txt
+index d80354342..346631359 100644
+--- a/requirements/cpu.txt
++++ b/requirements/cpu.txt
+@@ -8,13 +8,13 @@ numba == 0.61.2; python_version > '3.9'
+ packaging>=24.2
+ setuptools>=77.0.3,<80.0.0
+ --extra-index-url https://download.pytorch.org/whl/cpu
+-torch==2.6.0+cpu; platform_machine == "x86_64" # torch>2.6.0+cpu has performance regression on x86 platform, see https://github.com/pytorch/pytorch/pull/151218
+-torch==2.7.0; platform_system == "Darwin"
+-torch==2.7.0; platform_machine == "ppc64le" or platform_machine == "aarch64"
++torch==2.7.0; platform_machine == "x86_64" # torch>2.6.0+cpu has performance regression on x86 platform, see https://github.com/pytorch/pytorch/pull/151218
++torch==2.7.0; platform_system == "Darwin"
++torch==2.7.90; platform_machine == "ppc64le" or platform_machine == "aarch64"
+ 
+ # required for the image processor of minicpm-o-2_6, this must be updated alongside torch
+ torchaudio; platform_machine != "ppc64le" and platform_machine != "s390x"
+-torchaudio==2.7.0; platform_machine == "ppc64le"
++torchaudio==2.7.0; platform_machine == "ppc64le"
+ 
+ # required for the image processor of phi3v, this must be updated alongside torch
+ torchvision; platform_machine != "ppc64le" and platform_machine != "s390x"

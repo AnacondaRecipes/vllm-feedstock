@@ -26,7 +26,7 @@ source:
   #  - fix-gettid.patch
 
 build:
-  skip: true  # [py<310 or not py==311]
+  skip: true  # [py<310 or not py==311 or win or (osx and cpu_or_cuda=="cuda")]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
   #script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
@@ -55,7 +55,8 @@ requirements:
     - wheel
     - jinja2
     - pip
-    - libnuma                  # Ensures libnuma.so is available for linking
+    # Ensures libnuma.so is available for linking
+    - libnuma # [linux]
     - sleef
     - libtorch=*=*cpu*  
     #- libtorch
@@ -122,6 +123,8 @@ requirements:
     #- torchvision ==0.22.1 # [ cpu_or_cuda=="cpu"]
     - datasets
     #- intel-openmp >=2024.2.1 # platform_machine == "x86_64"
+    # From a search of the vllm code, it looks like python numa bindings are only
+    # needed for testing.
     #- py-libnuma #!= "Darwin"
     - psutil #!= "Darwin"
     
@@ -169,7 +172,7 @@ test:
   commands:
     - pip list
     #- pip check
-    #- vllm --help
+    - vllm --help
   requires:
     - pytest
     - pip

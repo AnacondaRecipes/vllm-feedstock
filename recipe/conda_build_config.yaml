@@ -2,3 +2,6 @@ cpu_or_cuda:
  - cpu
  #- cuda
  
+# pin_run_as_build:
+#     libtorch:
+#       max_pin: x.x

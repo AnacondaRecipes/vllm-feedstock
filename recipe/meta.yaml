@@ -26,7 +26,8 @@ source:
   #  - fix-gettid.patch
 
 build:
-  skip: true  # [py<310 or py>312 or (osx and cpu_or_cuda=="cuda")]
+  # Only supports python 3.10-3.12, does not support windows, and only supports CUDA on x86-64
+  skip: true  # [py<310 or py>312 or ((osx or aarch) and cpu_or_cuda=="cuda") or win]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cpu_or_cuda == "cpu"]
@@ -45,8 +46,6 @@ requirements:
     - git
     # Needed for <numa.h> and linking -lnuma
     - libnuma # [linux]
-    - libtorch>=2.7.0,<=2.8.0a0=*cpu* # [cpu_or_cuda=="cpu"]
-    - libtorch>=2.7.0,<=2.8.0a0=*cuda* # [cpu_or_cuda=="cuda"]
 
   host:
     - python
@@ -55,16 +54,16 @@ requirements:
     - packaging
     - setuptools >=77.0.3,<80.0.0
     - setuptools-scm
-    - pytorch=2.7.0=*cpu* # [cpu_or_cuda=="cpu"]
-    - pytorch=2.7.0=*cuda* # [cpu_or_cuda=="cuda"]
+    - pytorch 2.7.0=*cpu* # [cpu_or_cuda=="cpu"]
+    - pytorch 2.7.0=*cuda* # [cpu_or_cuda=="cuda"]
     - wheel
     - jinja2
     - pip
     # Ensures libnuma.so is available for linking
     - libnuma # [linux]
     - sleef
-    - libtorch>=2.7.0,<=2.8.0a0=*cpu* # [cpu_or_cuda=="cpu"]
-    - libtorch>=2.7.0,<=2.8.0a0=*cuda* # [cpu_or_cuda=="cuda"]
+    - libtorch >=2.7.0,<=2.8.0a0=*cpu*openblas* # [cpu_or_cuda=="cpu"]
+    - libtorch >=2.7.0,<=2.8.0a0=*cuda* # [cpu_or_cuda=="cuda"]
 
   run:
 
@@ -127,8 +126,8 @@ requirements:
     - numba ==0.61.2 #python version >3.9
     - pytorch=2.7.0=*cpu* # [cpu_or_cuda=="cpu"]
     - pytorch=2.7.0=*cuda* # [cpu_or_cuda=="cuda"]
-    - libtorch>=2.7.0,<=2.8.0a0=*cpu* # [cpu_or_cuda=="cpu"]
-    - libtorch>=2.7.0,<=2.8.0a0=*cuda* # [cpu_or_cuda=="cuda"]
+    # - libtorch >=2.7.0,<=2.8.0a0=*cpu*openblas* # [cpu_or_cuda=="cpu"]
+    # - libtorch >=2.7.0,<=2.8.0a0=*cuda* # [cpu_or_cuda=="cuda"]
 
     - torchaudio ==2.7.0
     - torchvision ==0.22.1

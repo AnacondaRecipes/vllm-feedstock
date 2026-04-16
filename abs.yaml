@@ -1,4 +1,5 @@
-#channels:
+channels:
+  - https://staging.continuum.io/pbp/fs/xgrammar-feedstock/pr2/00d93c6
 #  - https://staging.continuum.io/preprod-pbp/fs/airportsdata-feedstock/pr2/6cf6f29
 #  - https://staging.continuum.io/preprod-pbp/fs/outlines-core-feedstock/pr2/cd4cd65
 #  - https://staging.continuum.io/preprod-pbp/fs/outlines-feedstock/pr3/f8b383e

@@ -182,7 +182,7 @@ test:
     - pip check
     - vllm --help
     - chmod +x cpu-tests.sh
-    - cpu-tests.sh
+    - ./cpu-tests.sh
 
 
 

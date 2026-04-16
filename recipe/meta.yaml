@@ -52,21 +52,20 @@ requirements:
 
   host:
     - python
-    #- cmake
-    #- ninja
     - packaging
     - setuptools >=77.0.3,<80.0.0
-    - setuptools-scm
+    - setuptools-scm >=8
     - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
     - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
     - wheel
-    - jinja2
+    - jinja2 >=3.1.6
     - pip
     # Ensures libnuma.so is available for linking
     - libnuma =2.0.19 # [linux]
     - sleef {{ sleef }}
     - libtorch ={{ libtorch }}=*cpu*openblas* # [cpu_or_cuda=="cpu"]
     - libtorch ={{ libtorch }}=*cuda* # [cpu_or_cuda=="cuda"]
+    - regex
 
   run:
 
@@ -119,7 +118,6 @@ requirements:
     - watchfiles
     - python-json-logger
     - scipy
-    - ninja
     - pybase64
 
     ######################################################
@@ -181,9 +179,10 @@ test:
     - pip list
     - pip check
     - vllm --help
-    - chmod +x cpu-tests.sh
-    - ./cpu-tests.sh
-
+    - chmod +x cpu-tests_linux-64.sh # [(linux and x64) and cpu_or_cuda=="cpu"]
+    - ./cpu-tests_linux-64.sh # [(linux and x64) and cpu_or_cuda=="cpu"]
+    - chmod +x cpu-tests_linux-aarch64.sh # [(linux and aarch) and cpu_or_cuda=="cpu"]
+    - ./cpu-tests_linux-aarch64.sh # [(linux and aarch) and cpu_or_cuda=="cpu"]
 
 
 
@@ -193,10 +192,6 @@ test:
     - pip
     #- tblib
     #- ray
-
-# Errors from pip check:
-# vllm 0.9.2 requires py-libnuma, which is not installed.
-# vllm 0.9.2 requires xgrammar, which is not installed.
 
 about:
   home: https://vllm.ai/

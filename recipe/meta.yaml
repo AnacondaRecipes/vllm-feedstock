@@ -126,13 +126,11 @@ requirements:
     - intel-openmp # [x86_64]
     - py-libnuma # [linux]
     - psutil # [linux]
+    - triton # [x86_64]
     
     # from cuda.txt
     - llvm-openmp # [ cpu_or_cuda=="cuda"]
     - pytorch=2.7.0=*cuda* # [ cpu_or_cuda=="cuda"]
-    
-    # hidden dependencies not specified in requirements.txt
-    - sleef
 
     # Note from Charles about ray: https://anaconda.slack.com/archives/C08940LAV4Y/p1775579243337879?thread_ts=1775484005.040459&cid=C08940LAV4Y
     - ray-core # [cpu_or_cuda=="cuda"]

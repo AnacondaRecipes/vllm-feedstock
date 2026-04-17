@@ -43,6 +43,7 @@ requirements:
     - {{ stdlib('c') }}
     - cmake >=3.26.1
     - ninja
+    - git
 
   host:
     - python

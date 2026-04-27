@@ -1,0 +1,206 @@
+{% set name = "vllm" %}
+{% set version = "0.9.2" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
+  sha256: 6b0d855ea8ba18d76364c9b82ea94bfcaa9c9e724055438b5733e4716ed104e1
+  patches:
+    # Don't need this one yet, but we may need it for CUDA builds to ensure that nvcc can be found.
+    #- 0001-Search-for-the-CUDA-package-in-CMakeLists.patch
+    - patches/0002-Remove-ninja-pip-requirement.patch
+    - patches/0003-Manually-define-gettid.patch 
+    #- 0005-Configure-build-to-target-aarch64-even-though-CMake-.patch # [aarch64 or arm64]
+
+    # Some of the requirements need to be updated to work in the conda environment.
+    # * remove intel-openmp python requirement. This will be handled through the conda environment: The
+    #   conda intel-openmp package does not install itself in the python environment, so pip check for
+    #   intel-openmp will fail if this python requirement is specified, even though the required files 
+    #   are available in the conda environment.
+    # * Use pytorch 2.7 for CPU builds. 2.6 packages aren't available on the main channel, and 2.7 is used
+    #   for GPU builds already.
+    - patches/0008-update-requirements.patch
+
+build:
+  # Only supports python 3.10-3.12, does not support windows, and only supports CUDA on x86-64
+  # Does not currently support osx due to xgrammar dependency
+  skip: true  # [py<310 or py>312 or ((osx or aarch) and cpu_or_cuda=="cuda") or win or osx]
+  entry_points:
+    - vllm = vllm.entrypoints.cli.main:main
+  string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cpu_or_cuda == "cpu"]
+  string: cuda_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cpu_or_cuda == "cuda"]
+  script_env:
+    - VERBOSE=1
+    - VLLM_TARGET_DEVICE={{ cpu_or_cuda }}
+  number: 0
+
+requirements:
+  build:
+    - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
+    - {{ stdlib('c') }}
+    - cmake >=3.26.1
+    - ninja-base
+    - git
+
+  host:
+    - python
+    - packaging >=24.2
+    - setuptools >=77.0.3,<80.0.0
+    - setuptools-scm >=8
+    - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
+    - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
+    - wheel
+    - jinja2 >=3.1.6
+    - pip
+    # Ensures libnuma.so is available for linking
+    - libnuma =2.0.19 # [linux]
+    - sleef {{ sleef }}
+    - libtorch ={{ libtorch }}=*cpu*openblas* # [cpu_or_cuda=="cpu"]
+    - libtorch ={{ libtorch }}=*cuda* # [cpu_or_cuda=="cuda"]
+    - regex
+
+  run:
+
+    - python
+    # From common.txt
+    - regex
+    - cachetools
+    - psutil
+    - sentencepiece
+    - numpy
+    - requests >=2.26.0
+    - tqdm
+    - blake3
+    - py-cpuinfo
+    - transformers >=4.51.1
+    - huggingface_hub >=0.33.0
+    - tokenizers >=0.21.1
+    - protobuf
+    - fastapi >=0.115.0 
+    - aiohttp
+    - openai >=1.52.0,<=1.90.0
+    - pydantic >=2.10
+    - prometheus_client >=0.18.0
+    - pillow
+    - prometheus-fastapi-instrumentator >=7.0.0
+    - tiktoken >=0.6.0
+    - lm-format-enforcer >=0.10.11,<0.11
+    - llguidance >=0.7.11,<0.8.0
+    - outlines ==0.1.11
+    - lark ==1.2.2
+    - xgrammar ==0.1.19
+    - typing_extensions >=4.10
+    - filelock >=3.16.1 # need to contain https://github.com/tox-dev/filelock/pull/317
+    - partial-json-parser
+    - pyzmq >=25.0.0
+    - msgspec
+    - gguf >=0.13.0
+    - mistral-common >=1.6.2
+    - opencv >=4.11.0=*headless*  # required for video IO
+    - pyyaml
+    - six >=1.16.0  # [py>311]
+    - setuptools  >=77.0.3,<80.0.0 # [py>311 or cpu_or_cuda=="cpu"]
+    - einops 
+    - compressed-tensors ==0.10.2
+    - depyf ==0.18.0 # required for profiling and debugging with compilation config
+    - cloudpickle
+    - watchfiles
+    - python-json-logger
+    - scipy
+    - pybase64
+
+    # From cpu.txt:
+    - numba ==0.61.2 #python version >3.9
+    - packaging >=24.2 # [cpu_or_cuda=="cpu"]
+    - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
+    - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
+    - libtorch >=2.7.0,<=2.8.0a0=*cpu*openblas* # [cpu_or_cuda=="cpu"]
+    - libtorch >=2.7.0,<=2.8.0a0=*cuda* # [cpu_or_cuda=="cuda"]
+
+    - torchaudio ==2.7.0
+    - torchvision ==0.22.1
+    - datasets >=4
+
+    # The intel-openmp version pin differs from the cpu.txt requirements file for these reasons:
+    # * There have been some deprecations, in particular the Intel fortran compiler, but this does not appear to affect vLLM
+    # * There is a possible API deprecation and/or removal of some of the functions, but vLLM does not appear to use them, as they
+    #   would cause build failures
+    # * conda does not currently have a 2024.2.1 build (the version pinned in cpu.txt), and building one just for vLLM could have
+    #   other repurcussions as the feedstock is multi-output and the additional outputs might not be things we want to support
+    #   (in particular, MKL).
+    - intel-openmp ==2025.0.0 # [x86_64]
+    - py-libnuma # [linux]
+    - psutil # [linux]
+
+    # This version pin differs from the cpu.txt requirements file for these reasons:
+    # * The pinned version in cpu.txt is 3.2.0, which is not currently available on the main channel, and
+    #   we would like to avoid a rebuild of an older version of triton, if possible
+    # * In cpu.txt, there is a comment that this is needed to support pytorch 2.6(cpu). This recipe is updated to
+    #   use pytorch 2.7 for both CPU and CUDA builds.
+    # * triton is generally used for performance improvements, and pytorch should be capable of operating without it
+    #   entirely
+    # * Our pytorch CPU builds do not use triton
+    # * our pytorch GPU builds use triton 3.3.0, which is the version pinned below.
+    - triton ==3.3.0 # [x86_64]
+
+    # from cuda.txt
+    - llvm-openmp # [ cpu_or_cuda=="cuda"]
+    # pytorch is in cuda.txt and cpu.txt
+    
+
+    # Note from Charles about ray: https://anaconda.slack.com/archives/C08940LAV4Y/p1775579243337879?thread_ts=1775484005.040459&cid=C08940LAV4Y
+    - ray-core # [cpu_or_cuda=="cuda"]
+    - ray  # [cpu_or_cuda=="cuda"]
+    - cupy # [cpu_or_cuda=="cuda"]
+    - ray-adag # [cpu_or_cuda=="cuda"]
+    - xformers ==0.0.30  # [linux and cpu_or_cuda=="cuda"]
+
+test:
+  source_files:
+    - tests/
+  files:
+    - cpu-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cpu"]
+    - cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
+  script_env:
+    - VERBOSE=1
+    - VLLM_TARGET_DEVICE={{ cpu_or_cuda }}
+  imports:
+    - vllm
+    - pip
+
+  commands:
+    - pip list
+    - pip check
+    - vllm --help
+    - chmod +x cpu-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cpu"]
+    - ./cpu-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cpu"]
+    - chmod +x cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
+    - ./cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
+
+  requires:
+    - pytest
+    - pytest-asyncio
+    - pip
+
+about:
+  home: https://vllm.ai/
+  summary: A high-throughput and memory-efficient inference and serving engine for LLMs
+  description: |
+    vLLM is a fast and easy-to-use library for LLM inference and serving. 
+  license: Apache-2.0
+  license_file:
+    - LICENSE
+    - csrc/quantization/marlin/sparse/LICENSE
+    - csrc/quantization/marlin/dense/LICENSE
+  license_family: Apache
+  doc_url: https://docs.vllm.ai/en/latest/usage/
+  dev_url: https://github.com/vllm-project/vllm
+
+extra:
+    recipe-maintainers:
+      - ianaobi
+      - bkreider
+      - shermansiu

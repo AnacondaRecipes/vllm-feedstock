@@ -1,0 +1,9 @@
+cpu_or_cuda:
+ - cpu
+ #- cuda
+
+pytorch:
+  - 2.7
+
+libtorch:
+  - 2.7

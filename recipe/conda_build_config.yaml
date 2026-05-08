@@ -1,6 +1,9 @@
 cpu_or_cuda:
- - cpu
- #- cuda
+ #- cpu
+ - cuda
+
+cuda_compiler_version: # [linux or win]
+  - 12.8               # [linux or win]
 
 pytorch:
   - 2.7

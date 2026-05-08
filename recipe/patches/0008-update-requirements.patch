@@ -33,3 +33,25 @@ index df3a33935..4380b6812 100644
  py-libnuma; platform_system != "Darwin"
  psutil; platform_system != "Darwin"
 -triton==3.2.0; platform_machine == "x86_64" # Triton is required for torch 2.6+cpu, as it is imported in torch.compile.
+diff --git a/requirements/cuda.txt b/requirements/cuda.txt
+index a71d9728f..2c132522e 100644
+--- a/requirements/cuda.txt
++++ b/requirements/cuda.txt
+@@ -7,8 +7,15 @@ numba == 0.61.2; python_version > '3.9'
+ # Dependencies for NVIDIA GPUs
+ ray[cgraph]>=2.43.0, !=2.44.* # Ray Compiled Graph, required for pipeline parallelism in V1.
+ torch==2.7.0
+-torchaudio==2.7.0
++
++# the tagged version in git is labeled as an a0 version, not a fully
++# released version, even though it is tagged as a full version We
++# need to adjust the requirements so pip check will pass.
++torchaudio>=2.7.0a0,<2.8.0a0
+ # These must be updated alongside torch
+-torchvision==0.22.0 # Required for phi3v processor. See https://github.com/pytorch/vision?tab=readme-ov-file#installation for corresponding version
++# Torch should be compatible with a slightly wider range of versions
++# than an exact pinning of torchvision, which will allow for the use
++# of 0.22.1 which is available in conda
++torchvision>=0.22.0,<0.23.0a0 # Required for phi3v processor. See https://github.com/pytorch/vision?tab=readme-ov-file#installation for corresponding version
+ # https://github.com/facebookresearch/xformers/releases/tag/v0.0.30
+ xformers==0.0.30; platform_system == 'Linux' and platform_machine == 'x86_64'  # Requires PyTorch >= 2.7

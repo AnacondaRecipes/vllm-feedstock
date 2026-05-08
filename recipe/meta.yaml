@@ -30,7 +30,7 @@ source:
 build:
   # Only supports python 3.10-3.12, does not support windows, and only supports CUDA on x86-64
   # Does not currently support osx due to xgrammar dependency
-  skip: true  # [py<310 or py>312 or ((osx or aarch) and cpu_or_cuda=="cuda") or win or osx or py!=312]
+  skip: true  # [py<310 or py>312 or ((osx or aarch64) and cpu_or_cuda=="cuda") or win or osx or py!=312]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cpu_or_cuda == "cpu"]
@@ -199,8 +199,6 @@ test:
     - ./cuda-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cuda"]
     - chmod +x cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
     - ./cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
-    - chmod +x cuda-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cuda"]
-    - ./cuda-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cuda"]
 
   requires:
     - pytest

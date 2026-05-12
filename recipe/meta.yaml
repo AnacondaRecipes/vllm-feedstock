@@ -185,6 +185,7 @@ test:
   files:
     - cpu-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cpu"]
     - cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
+    - cuda-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cuda"]
   script_env:
     - VERBOSE=1
     - VLLM_TARGET_DEVICE={{ cpu_or_cuda }}

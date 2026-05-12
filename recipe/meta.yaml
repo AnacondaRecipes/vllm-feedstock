@@ -39,9 +39,9 @@ build:
     - VERBOSE=1
     - VLLM_TARGET_DEVICE={{ cpu_or_cuda }}
   number: 1
-  missing_dso_whitelist:
+  missing_dso_whitelist: # [cpu_or_cuda =="cuda"]
     # libcuda.so is the cuda driver API library and is a system library.
-    - "**/libcuda.so*"            # [cpu_or_gpu =="cuda"]
+    - "**/libcuda.so*"            # [cpu_or_cuda =="cuda"]
 
 requirements:
   build:

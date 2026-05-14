@@ -1,5 +1,5 @@
 cpu_or_cuda:
- #- cpu
+ - cpu
  - cuda
 
 cuda_compiler_version: # [linux or win]

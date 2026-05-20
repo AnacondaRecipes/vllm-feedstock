@@ -1,5 +1,10 @@
 {% set name = "vllm" %}
 {% set version = "0.9.2" %}
+{% set build_num = 1 %}
+
+{% if cpu_or_cuda =="cuda" %}
+{% set build_num = 200 + build_num %}
+{% endif %}
 
 package:
   name: {{ name|lower }}
@@ -39,7 +44,7 @@ build:
   script_env:
     - VERBOSE=1
     - VLLM_TARGET_DEVICE={{ cpu_or_cuda }}
-  number: 1
+  number: {{ build_num }}
   missing_dso_whitelist: # [cpu_or_cuda =="cuda"]
     # libcuda.so is the cuda driver API library and is a system library.
     - "**/libcuda.so*"            # [cpu_or_cuda =="cuda"]
@@ -170,6 +175,7 @@ requirements:
     - triton ==3.3.0 # [x86_64 and cpu_or_cuda=="cpu"]
 
     # from cuda.txt
+    - __cuda   # [cpu_or_cuda == "cuda"]
     - llvm-openmp # [ cpu_or_cuda=="cuda"]
     # pytorch is in cuda.txt and cpu.txt
     

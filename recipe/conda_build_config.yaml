@@ -1,6 +1,12 @@
 cpu_or_cuda:
- - cpu
- #- cuda
+  # CPU builds are failing tests on PBP currently, despite no CPU-specific changes in
+  # the build since it was last released. Disabling for now so CUDA version can be released.
+  # This can be investigated the in the next vLLM build.
+  #- cpu 
+  - cuda
+
+cuda_compiler_version: # [linux or win]
+  - 12.8               # [linux or win]
 
 pytorch:
   - 2.7

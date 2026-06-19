@@ -1,5 +1,5 @@
 {% set name = "vllm" %}
-{% set version = "0.9.2" %}
+{% set version = "0.21.0" %}
 {% set build_num = 1 %}
 
 {% if cpu_or_cuda =="cuda" %}
@@ -12,7 +12,7 @@ package:
 
 source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
-    sha256: 6b0d855ea8ba18d76364c9b82ea94bfcaa9c9e724055438b5733e4716ed104e1
+    sha256: 05ff89c3e926b88b77d7878e317a659ffba678afc21c1d48952037aa5457f058
     patches:
       # Don't need this one yet, but we may need it for CUDA builds to ensure that nvcc can be found.
       - patches/0001-Search-for-the-CUDA-package-in-CMakeLists.patch
@@ -65,7 +65,7 @@ requirements:
     - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
     - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
     - wheel
-    - jinja2 >=3.1.6
+    - jinja2
     - pip
     # Ensures libnuma.so is available for linking
     - libnuma =2.0.19 # [linux]
@@ -102,55 +102,70 @@ requirements:
     - tqdm
     - blake3
     - py-cpuinfo
-    - transformers >=4.51.1
-    - huggingface_hub >=0.33.0
+    - transformers >=4.56.0,!=5.0.*,!= 5.1.*,!= 5.2.*,!= 5.3.*,!= 5.4.*,!= 5.5.0
+    #- huggingface_hub >=0.33.0
     - tokenizers >=0.21.1
-    - protobuf
+    - protobuf >=6.33.5
     - fastapi >=0.115.0 
-    - aiohttp
-    - openai >=1.52.0,<=1.90.0
-    - pydantic >=2.10
+    - aiohttp >=3.13.0
+    - openai >=2.0.0
+    - pydantic >=2.12.0
     - prometheus_client >=0.18.0
     - pillow
     - prometheus-fastapi-instrumentator >=7.0.0
     - tiktoken >=0.6.0
-    - lm-format-enforcer >=0.10.11,<0.11
-    - llguidance >=0.7.11,<0.8.0
-    - outlines ==0.1.11
+    - lm-format-enforcer ==0.11.3
+    - llguidance >=1.3.0,<1.4.0
+    #- outlines ==0.1.11
+    - outlines-core ==0.2.14
+    - diskcache ==5.6.3
     - lark ==1.2.2
-    - xgrammar ==0.1.19
+    - xgrammar >=0.2.0,<1.0.0
     - typing_extensions >=4.10
     - filelock >=3.16.1 # need to contain https://github.com/tox-dev/filelock/pull/317
     - partial-json-parser
     - pyzmq >=25.0.0
     - msgspec
-    - gguf >=0.13.0
-    - mistral-common >=1.6.2
-    - opencv >=4.11.0=*headless*  # required for video IO
+    - gguf >=0.17.0
+    - mistral-common >=1.11.2
+    - opencv >=4.13.0=*headless*  # required for video IO
     - pyyaml
     - six >=1.16.0  # [py>311]
-    - setuptools  >=77.0.3,<80.0.0 # [py>311 or cpu_or_cuda=="cpu"]
+    - setuptools >=77.0.3,<80.0.0 # [py>311 or cpu_or_cuda=="cpu"]
     - einops 
-    - compressed-tensors ==0.10.2
-    - depyf ==0.18.0 # required for profiling and debugging with compilation config
+    - compressed-tensors ==0.15.0.1
+    - depyf ==0.20.0 # required for profiling and debugging with compilation config
     - cloudpickle
     - watchfiles
     - python-json-logger
     - scipy
     - pybase64
 
+    # New for v0.21.0
+    - cbor2
+    - ijson
+    - setproctitle
+    - openai-harmony >=0.0.3
+    - anthropic >=0.71.0
+    - model-hosting-container-standards >=0.1.14,<1.0.0
+    - mcp
+    - opentelemetry-sdk >=1.27.0
+    - opentelemetry-api >=1.27.0
+    - opentelemetry-exporter-otlp >=1.27.0
+    - opentelemetry-semantic-conventions-ai >=0.4.1
+
     # From cpu.txt:
-    - numba ==0.61.2 #python version >3.9
+    - numba ==0.65.0 #python version >3.9
     - packaging >=24.2 # [cpu_or_cuda=="cpu"]
     - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
     - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
-    - libtorch >=2.7.0,<=2.8.0a0=*cpu*openblas* # [cpu_or_cuda=="cpu"]
-    - libtorch >=2.7.0,<=2.8.0a0=*cuda* # [cpu_or_cuda=="cuda"]
+    - libtorch >=2.11.0,<=2.12.0a0=*cpu*openblas* # [cpu_or_cuda=="cpu"]
+    - libtorch >=2.11.0,<=2.12.0a0=*cuda* # [cpu_or_cuda=="cuda"]
 
-    - torchaudio ==2.7.0=*cpu* # [cpu_or_cuda=="cpu"]
-    - torchaudio ==2.7.0=*cuda* # [cpu_or_cuda=="cuda"]
-    - torchvision ==0.22.1=*cpu* # [cpu_or_cuda=="cpu"]
-    - torchvision ==0.22.1=*cuda* # [cpu_or_cuda=="cuda"]
+    - torchaudio ==2.11.0=*cpu* # [cpu_or_cuda=="cpu"]
+    - torchaudio ==2.11.0=*cuda* # [cpu_or_cuda=="cuda"]
+    - torchvision ==0.26=*cpu* # [cpu_or_cuda=="cpu"]
+    - torchvision ==0.26=*cuda* # [cpu_or_cuda=="cuda"]
     - datasets >=4 # [cpu_or_cuda=="cpu"]
 
     # The intel-openmp version pin differs from the cpu.txt requirements file for these reasons:
@@ -215,6 +230,7 @@ test:
     - pytest
     - pytest-asyncio
     - pip
+    - tblib
 
 about:
   home: https://vllm.ai/
@@ -224,8 +240,7 @@ about:
   license: Apache-2.0
   license_file:
     - LICENSE
-    - csrc/quantization/marlin/sparse/LICENSE
-    - csrc/quantization/marlin/dense/LICENSE
+    - flash-attention/LICENSE
   license_family: Apache
   doc_url: https://docs.vllm.ai/en/latest/usage/
   dev_url: https://github.com/vllm-project/vllm

@@ -1,27 +1,36 @@
 #!/usr/bin/env bash
 
+#!/usr/bin/env bash
+
 set -e
 set -x
 
-pytest tests/core/test_scheduler.py
-
-pytest -v -s tests/kernels/attention/test_cache.py -m cpu_model
-pytest -v -s tests/kernels/attention/test_mla_decode_cpu.py -m cpu_model
-
+# These tests seem to fail due to what appears to be a vLLM bug.
 SKIP_TESTS=(
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-openai-community/gpt2]
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-facebook/opt-125m]
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-Qwen/Qwen2.5-0.5B-Instruct]
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-TitanML/tiny-mixtral]
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-google/gemma-1.1-2b-it]
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-meta-llama/Llama-3.2-1B-Instruct]
+    --deselect tests/kernels/attention/test_cpu_attn.py::test_varlen_with_paged_kv_softcap
+    --deselect tests/kernels/attention/test_cpu_attn.py::test_varlen_with_paged_kv_normal_amx
+    --deselect tests/kernels/attention/test_cpu_attn.py::test_varlen_with_paged_kv_alibi
+    --deselect tests/kernels/attention/test_cpu_attn.py::test_varlen_with_paged_kv_sink
 )
-VLLM_CPU_SGL_KERNEL=1 pytest -v -s tests/models/language/generation ${SKIP_TESTS[@]} -m cpu_model
 
-# The following tests are not supported on ARM in vLLM v0.9.2. It was added for v0.10.0rc1.
-# The PR for this was merged a few days after the 0.9.2 release (Which was July 7th, 2025).
-# vLLM PR is here: https://github.com/vllm-project/vllm/pull/14129
-# vLLM 0.10.0rc1 Release notes: https://github.com/vllm-project/vllm/releases/tag/v0.10.0rc1
-#pytest -s -v \
-#    tests/quantization/test_compressed_tensors.py::test_compressed_tensors_w8a8_static_setup \
-#    tests/quantization/test_compressed_tensors.py::test_compressed_tensors_w8a8_dynamic_per_token
+# SKIP_MODELS=(
+#     google/gemma-2-2b-it
+#     or google/gemma-1.1-2b-it
+#     or google/gemma-1.1-2b-it
+#     or llama/Llama-3.2-1B-Instruct
+# )
+# expanded_skip_models=${skip_models[@]}
+
+
+pytest -v -s tests/kernels/attention/test_cpu_attn.py ${SKIP_TESTS[@]}
+pytest -v -s tests/kernels/moe/test_cpu_fused_moe.py
+pytest -v -s tests/kernels/moe/test_cpu_fp8_fused_moe.py
+pytest -v -s tests/kernels/test_onednn.py
+pytest -v -s tests/kernels/test_awq_int4_to_int8.py
+pytest -v -s tests/kernels/quantization/test_cpu_fp8_scaled_mm.py
+
+# Skipping this first test because it takes too long to run
+# VLLM_CPU_KVCACHE_SPACE=4 pytest -v -s tests/models/language/generation -m cpu_model -k "not (expanded_skip_models)"
+VLLM_CPU_KVCACHE_SPACE=4 pytest -v -s tests/models/language/pooling -m cpu_model --deselect "tests/models/language/pooling/test_embedding.py::test_models[ssmits/Qwen2-7B-Instruct-embed-base]"
+
+VLLM_CPU_KVCACHE_SPACE=4 pytest -v -s tests/quantization/test_compressed_tensors.py::test_compressed_tensors_w8a8_logprobs

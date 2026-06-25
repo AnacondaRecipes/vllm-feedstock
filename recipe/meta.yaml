@@ -231,6 +231,8 @@ test:
     - pytest-asyncio
     - pip
     - tblib
+    - accelerate
+    - sentence-transformers
 
 about:
   home: https://vllm.ai/

@@ -1,6 +1,6 @@
 task_timeout: 28800
 channels:
-  - https://staging.continuum.io/pbp/fs/xgrammar-feedstock/pr4/683241c
+  - https://staging.continuum.io/pbp/fs/xgrammar-feedstock/pr4/c99317f
   #- https://staging.continuum.io/pbp/fs/cbor2-feedstock/pr2/b254a8f
   #- https://staging.continuum.io/pbp/fs/llguidance-feedstock/pr4/28f5577
   #- https://staging.continuum.io/pbp/fs/openai-harmony-feedstock/pr1/1e4f20a

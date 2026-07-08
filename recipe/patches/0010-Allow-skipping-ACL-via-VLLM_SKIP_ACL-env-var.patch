@@ -7,7 +7,7 @@ index 361f08b51..334b9163c 100644
      # TODO [fadara01]: remove this once ACL can be fetched and built automatically as a dependency of oneDNN
      set(ONEDNN_AARCH64_USE_ACL OFF CACHE BOOL "")
 +    # Allow disabling ACL (e.g. in conda-forge where it is not packaged)
-++   if(NOT DEFINED ENV{VLLM_SKIP_ACL})
++    if(NOT DEFINED ENV{VLLM_SKIP_ACL})
      if(ASIMD_FOUND)
          # Set number of parallel build processes
          include(ProcessorCount)
@@ -17,8 +17,8 @@ index 361f08b51..334b9163c 100644
          add_compile_definitions(VLLM_USE_ACL)
 -    endif()
 +    else()
-++       message(STATUS "Skipping ACL (VLLM_SKIP_ACL is set)")
-++   endif()  # VLLM_SKIP_ACL
++        message(STATUS "Skipping ACL (VLLM_SKIP_ACL is set)")
++    endif()  # VLLM_SKIP_ACL
  
      set(FETCHCONTENT_SOURCE_DIR_ONEDNN "$ENV{FETCHCONTENT_SOURCE_DIR_ONEDNN}" CACHE PATH "Path to a local oneDNN source directory.")
  

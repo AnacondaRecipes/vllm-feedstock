@@ -1,24 +1,23 @@
 diff --git a/cmake/cpu_extension.cmake b/cmake/cpu_extension.cmake
-index 361f08b51..334b9163c 100644
+index 361f08b51..f477d96ec 100644
 --- a/cmake/cpu_extension.cmake
 +++ b/cmake/cpu_extension.cmake
-@@ -221,6 +221,8 @@ if (ENABLE_X86_ISA OR (ASIMD_FOUND AND NOT APPLE_SILICON_FOUND) OR POWER9_FOUND
-     # Fetch and build Arm Compute Library (ACL) as oneDNN's backend for AArch64
-     # TODO [fadara01]: remove this once ACL can be fetched and built automatically as a dependency of oneDNN
-     set(ONEDNN_AARCH64_USE_ACL OFF CACHE BOOL "")
-+    # Allow disabling ACL (e.g. in conda-forge where it is not packaged)
-+    if(NOT DEFINED ENV{VLLM_SKIP_ACL})
-     if(ASIMD_FOUND)
-         # Set number of parallel build processes
-         include(ProcessorCount)
-@@ -280,7 +282,9 @@ if (ENABLE_X86_ISA OR (ASIMD_FOUND AND NOT APPLE_SILICON_FOUND) OR POWER9_FOUND
+@@ -229,6 +229,8 @@ if (ENABLE_X86_ISA OR (ASIMD_FOUND AND NOT APPLE_SILICON_FOUND) OR POWER9_FOUND
+             set(NPROC 4)
+         endif()
+ 
++        # Allow disabling ACL (e.g. in conda-forge where it is not packaged)
++        if(NOT DEFINED ENV{VLLM_SKIP_ACL})
+         # Fetch and populate ACL
+         if(DEFINED ENV{ACL_ROOT_DIR} AND IS_DIRECTORY "$ENV{ACL_ROOT_DIR}")
+             message(STATUS "Using ACL from specified source directory: $ENV{ACL_ROOT_DIR}")
+@@ -280,6 +282,9 @@ if (ENABLE_X86_ISA OR (ASIMD_FOUND AND NOT APPLE_SILICON_FOUND) OR POWER9_FOUND
          # VLLM/oneDNN settings for ACL
          set(ONEDNN_AARCH64_USE_ACL ON CACHE BOOL "" FORCE)
          add_compile_definitions(VLLM_USE_ACL)
--    endif()
-+    else()
-+        message(STATUS "Skipping ACL (VLLM_SKIP_ACL is set)")
-+    endif()  # VLLM_SKIP_ACL
++        else()
++            message(STATUS "Skipping ACL (VLLM_SKIP_ACL is set)")
++        endif()  # VLLM_SKIP_ACL
+     endif()
  
      set(FETCHCONTENT_SOURCE_DIR_ONEDNN "$ENV{FETCHCONTENT_SOURCE_DIR_ONEDNN}" CACHE PATH "Path to a local oneDNN source directory.")
- 

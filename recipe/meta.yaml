@@ -28,6 +28,7 @@ source:
       # * Use pytorch 2.7 for CPU builds. 2.6 packages aren't available on the main channel, and 2.7 is used
       #   for GPU builds already.
       - patches/0008-update-requirements.patch
+      - patches/0010-Allow-skipping-ACL-via-VLLM_SKIP_ACL-env-var.patch
   - url: https://github.com/vllm-project/flash-attention/archive/1c2624e53c078854e0637ee566c72fe2107e75f4.tar.gz
     sha256: cca19d7e53af08aa6d6f0c4fd9dd78d30314497e38fb03b1368b3d5a77ab4b5c
     folder: flash-attention
@@ -44,6 +45,7 @@ build:
   script_env:
     - VERBOSE=1
     - VLLM_TARGET_DEVICE={{ cpu_or_cuda }}
+    - VLLM_SKIP_ACL=1 # [aarch64]
   number: {{ build_num }}
   missing_dso_whitelist: # [cpu_or_cuda =="cuda"]
     # libcuda.so is the cuda driver API library and is a system library.

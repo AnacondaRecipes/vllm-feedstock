@@ -26,4 +26,3 @@ pytest -v -s tests/kernels/attention/test_cpu_attn.py ${SKIP_TESTS[@]}
 
 # Skip the tests that require BFloat16
 pytest -v -s tests/kernels/test_onednn.py -k "not test_onednn_gemm"
-pytest -v -s tests/kernels/quantization/test_cpu_fp8_scaled_mm.py

@@ -37,7 +37,7 @@ build:
   # Only supports python 3.10-3.12, does not support windows, and only supports CUDA on x86-64
   # Does not currently support osx due to xgrammar dependency.
   # Skip python 3.10 for CUDA builds due to a segfault caused by some of the dependencies
-  skip: true  # [py<310 or py>314 or ((osx or aarch64) and cpu_or_cuda=="cuda") or win or osx or (cpu_or_cuda=="cuda" and py==310)]
+  skip: true  # [py<310 or py>313 or ((osx or aarch64) and cpu_or_cuda=="cuda") or win or osx or (cpu_or_cuda=="cuda" and py==310)]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cpu_or_cuda == "cpu"]

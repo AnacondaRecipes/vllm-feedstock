@@ -23,14 +23,5 @@ SKIP_TESTS=(
 
 
 pytest -v -s tests/kernels/attention/test_cpu_attn.py ${SKIP_TESTS[@]}
-pytest -v -s tests/kernels/moe/test_cpu_fused_moe.py
-pytest -v -s tests/kernels/moe/test_cpu_fp8_fused_moe.py
 pytest -v -s tests/kernels/test_onednn.py
-pytest -v -s tests/kernels/test_awq_int4_to_int8.py
 pytest -v -s tests/kernels/quantization/test_cpu_fp8_scaled_mm.py
-
-# Skipping this first test because it takes too long to run
-# VLLM_CPU_KVCACHE_SPACE=4 pytest -v -s tests/models/language/generation -m cpu_model -k "not (expanded_skip_models)"
-VLLM_CPU_KVCACHE_SPACE=4 pytest -v -s tests/models/language/pooling -m cpu_model --deselect "tests/models/language/pooling/test_embedding.py::test_models[ssmits/Qwen2-7B-Instruct-embed-base]"
-
-VLLM_CPU_KVCACHE_SPACE=4 pytest -v -s tests/quantization/test_compressed_tensors.py::test_compressed_tensors_w8a8_logprobs

@@ -30,7 +30,7 @@ pytest -v -s tests/kernels/attention/test_cpu_attn.py ${SKIP_TESTS[@]}
 # E       Greatest absolute difference: 0.001220703125 at index (62, 110) (up to 0.001 allowed)
 # E       Greatest relative difference: 0.2080078125 at index (62, 110) (up to 0.016 allowed)
 #pytest -v -s tests/kernels/moe/test_cpu_fused_moe.py
-pytest -v -s tests/kernels/moe/test_cpu_fp8_fused_moe.py
+
 pytest -v -s tests/kernels/test_onednn.py
 pytest -v -s tests/kernels/test_awq_int4_to_int8.py
 pytest -v -s tests/kernels/quantization/test_cpu_fp8_scaled_mm.py

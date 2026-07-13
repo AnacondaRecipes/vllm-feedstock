@@ -32,7 +32,10 @@ pytest -v -s tests/kernels/attention/test_cpu_attn.py ${SKIP_TESTS[@]}
 #pytest -v -s tests/kernels/moe/test_cpu_fused_moe.py
 
 pytest -v -s tests/kernels/test_onednn.py
-pytest -v -s tests/kernels/test_awq_int4_to_int8.py
+# The following test is included in the project's list of CPU tests, but depends on hardware capabilities not available
+# on the AWS instance that this will end up being tested on (g4dn). The tests have passed when run on a different instance
+# (m7i-flex).
+#pytest -v -s tests/kernels/test_awq_int4_to_int8.py
 pytest -v -s tests/kernels/quantization/test_cpu_fp8_scaled_mm.py
 
 # Skipping this first test because it takes too long to run

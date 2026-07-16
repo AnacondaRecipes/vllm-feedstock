@@ -37,7 +37,7 @@ build:
   # Only supports python 3.10-3.12, does not support windows, and only supports CUDA on x86-64
   # Does not currently support osx due to xgrammar dependency.
   # Skip python 3.10 for CUDA builds due to a segfault caused by some of the dependencies
-  skip: true  # [py<310 or py>313 or ((osx or aarch64) and cpu_or_cuda=="cuda") or win or osx or (cpu_or_cuda=="cuda" and py==310)]
+  skip: true  # [py<310 or py>314 or ((osx or aarch64) and cpu_or_cuda=="cuda") or win or osx or (cpu_or_cuda=="cuda" and py==310)]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cpu_or_cuda == "cpu"]
@@ -180,16 +180,6 @@ requirements:
     - intel-openmp ==2025.0.0 # [x86_64 and cpu_or_cuda=="cpu"]
     - py-libnuma # [linux and cpu_or_cuda=="cpu"]
 
-    # This version pin differs from the cpu.txt requirements file for these reasons:
-    # * The pinned version in cpu.txt is 3.2.0, which is not currently available on the main channel, and
-    #   we would like to avoid a rebuild of an older version of triton, if possible
-    # * In cpu.txt, there is a comment that this is needed to support pytorch 2.6(cpu). This recipe is updated to
-    #   use pytorch 2.7 for both CPU and CUDA builds.
-    # * triton is generally used for performance improvements, and pytorch should be capable of operating without it
-    #   entirely
-    # * Our pytorch CPU builds do not use triton
-    # * our pytorch GPU builds use triton 3.3.0, which is the version pinned below.
-    - triton ==3.3.0 # [x86_64 and cpu_or_cuda=="cpu"]
 
     # from cuda.txt
     - __cuda   # [cpu_or_cuda == "cuda"]

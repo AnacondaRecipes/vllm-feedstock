@@ -225,6 +225,7 @@ test:
     - tblib
     - accelerate
     - sentence-transformers
+    - {{ compiler('cxx') }}   # [linux] Required by torch.compile (inductor) at runtime
 
 about:
   home: https://vllm.ai/

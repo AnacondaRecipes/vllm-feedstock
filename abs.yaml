@@ -1,4 +1,1 @@
 task_timeout: 28800
-channels:
-  - https://staging.continuum.io/pbp/fs/llama.cpp-feedstock/pr43/f4f1645
-  - https://staging.continuum.io/pbp/fs/lark-feedstock/pr8/c058c67

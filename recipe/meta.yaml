@@ -14,27 +14,17 @@ source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
     sha256: 05ff89c3e926b88b77d7878e317a659ffba678afc21c1d48952037aa5457f058
     patches:
-      # Don't need this one yet, but we may need it for CUDA builds to ensure that nvcc can be found.
       - patches/0001-Search-for-the-CUDA-package-in-CMakeLists.patch
       - patches/0002-Remove-ninja-pip-requirement.patch
       - patches/0003-Manually-define-gettid.patch
-      #- 0005-Configure-build-to-target-aarch64-even-though-CMake-.patch # [aarch64 or arm64]
-
-      # Some of the requirements need to be updated to work in the conda environment.
-      # * remove intel-openmp python requirement. This will be handled through the conda environment: The
-      #   conda intel-openmp package does not install itself in the python environment, so pip check for
-      #   intel-openmp will fail if this python requirement is specified, even though the required files 
-      #   are available in the conda environment.
-      # * Use pytorch 2.7 for CPU builds. 2.6 packages aren't available on the main channel, and 2.7 is used
-      #   for GPU builds already.
-      - patches/0008-update-requirements.patch
-      - patches/0010-Allow-skipping-ACL-via-VLLM_SKIP_ACL-env-var.patch
+      - patches/0004-Allow-skipping-ACL-via-VLLM_SKIP_ACL-env-var.patch
+      - patches/0005-update-requirements.patch
   - url: https://github.com/vllm-project/flash-attention/archive/1c2624e53c078854e0637ee566c72fe2107e75f4.tar.gz
     sha256: cca19d7e53af08aa6d6f0c4fd9dd78d30314497e38fb03b1368b3d5a77ab4b5c
     folder: flash-attention
 
 build:
-  # Only supports python 3.10-3.12, does not support windows, and only supports CUDA on x86-64
+  # does not support windows, and only supports CUDA on x86-64
   # Does not currently support osx due to xgrammar dependency.
   # Skip python 3.10 for CUDA builds due to a segfault caused by some of the dependencies
   skip: true  # [py<310 or py>314 or ((osx or aarch64) and cpu_or_cuda=="cuda") or win or osx or (cpu_or_cuda=="cuda" and py==310)]
@@ -105,7 +95,6 @@ requirements:
     - blake3
     - py-cpuinfo
     - transformers >=4.56.0,!=5.0.*,!= 5.1.*,!= 5.2.*,!= 5.3.*,!= 5.4.*,!= 5.5.0
-    #- huggingface_hub >=0.33.0
     - tokenizers >=0.21.1
     - protobuf >=6.33.5
     - fastapi >=0.115.0 
@@ -118,7 +107,6 @@ requirements:
     - tiktoken >=0.6.0
     - lm-format-enforcer ==0.11.3
     - llguidance >=1.3.0,<1.4.0
-    #- outlines ==0.1.11
     - outlines-core ==0.2.14
     - diskcache ==5.6.3
     - lark ==1.2.2

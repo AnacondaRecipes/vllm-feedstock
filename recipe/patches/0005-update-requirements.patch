@@ -1,3 +1,23 @@
+From 8473d22d87212be1a4a07308ce70ab4cd5cadf60 Mon Sep 17 00:00:00 2001
+From: Andrew Howe <ahowe@anaconda.com>
+Date: Mon, 20 Jul 2026 11:29:47 -0400
+Subject: [PATCH 5/5] update requirements
+
+Some of the requirements need to be updated to work in the conda environment.
+ * remove intel-openmp python requirement. This will be handled
+   through the conda environment: The conda intel-openmp package
+   does not install itself in the python environment, so pip check
+   for intel-openmp will fail if this python requirement is
+   specified, even though the required files are available in
+   the conda environment.
+ * Update setuptools version to a compatible version that is on
+   main/pkgs
+ * update torch package name. The PyPI and main/pkgs channel differ
+   slightly on naming conventions.
+---
+ requirements/cpu.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
 diff --git a/requirements/cpu.txt b/requirements/cpu.txt
 index 5ec338af7..e42227621 100644
 --- a/requirements/cpu.txt
@@ -26,3 +46,6 @@ index 5ec338af7..e42227621 100644
  
  # Use this to gather CPU info and optimize based on ARM Neoverse cores
  py-cpuinfo; platform_machine == "aarch64"
+-- 
+2.51.0
+

@@ -27,7 +27,7 @@ index 5ec338af7..e42227621 100644
  -r common.txt
  
 -setuptools==77.0.3 # this version can reuse CMake build dir
-+setuptools >=78.0.3,<80.0.0 # this version can reuse CMake build dir
++setuptools >=77.0.3,<81.0.0 # this version can reuse CMake build dir
  
  numba == 0.65.0; platform_machine != "s390x" # Required for N-gram speculative decoding
  

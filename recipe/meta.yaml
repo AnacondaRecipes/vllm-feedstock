@@ -55,7 +55,6 @@ requirements:
     - packaging >=24.2
     - setuptools >=77.0.3,<81.0.0
     - setuptools-scm >=8
-    - setuptools-rust >=1.9.0
     - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
     - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
     - wheel
@@ -157,7 +156,6 @@ requirements:
     - torchaudio ==2.11.0=*cuda* # [cpu_or_cuda=="cuda"]
     - torchvision ==0.26=*cpu* # [cpu_or_cuda=="cpu"]
     - torchvision ==0.26=*cuda* # [cpu_or_cuda=="cuda"]
-    - datasets >=4 # [cpu_or_cuda=="cpu"]
 
     # The intel-openmp version pin differs from the cpu.txt requirements file for these reasons:
     # * There have been some deprecations, in particular the Intel fortran compiler, but this does not appear to affect vLLM

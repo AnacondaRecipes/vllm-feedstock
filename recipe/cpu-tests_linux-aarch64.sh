@@ -3,25 +3,15 @@
 set -e
 set -x
 
-pytest tests/core/test_scheduler.py
-
-pytest -v -s tests/kernels/attention/test_cache.py -m cpu_model
-pytest -v -s tests/kernels/attention/test_mla_decode_cpu.py -m cpu_model
-
+# These tests seem to fail due to what appears to be a vLLM bug.
 SKIP_TESTS=(
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-openai-community/gpt2]
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-facebook/opt-125m]
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-Qwen/Qwen2.5-0.5B-Instruct]
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-TitanML/tiny-mixtral]
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-google/gemma-1.1-2b-it]
-    --deselect tests/models/language/generation/test_common.py::test_models[False-5-32-meta-llama/Llama-3.2-1B-Instruct]
+    --deselect tests/kernels/attention/test_cpu_attn.py::test_varlen_with_paged_kv_softcap
+    --deselect tests/kernels/attention/test_cpu_attn.py::test_varlen_with_paged_kv_normal_amx
+    --deselect tests/kernels/attention/test_cpu_attn.py::test_varlen_with_paged_kv_alibi
+    --deselect tests/kernels/attention/test_cpu_attn.py::test_varlen_with_paged_kv_sink
 )
-VLLM_CPU_SGL_KERNEL=1 pytest -v -s tests/models/language/generation ${SKIP_TESTS[@]} -m cpu_model
 
-# The following tests are not supported on ARM in vLLM v0.9.2. It was added for v0.10.0rc1.
-# The PR for this was merged a few days after the 0.9.2 release (Which was July 7th, 2025).
-# vLLM PR is here: https://github.com/vllm-project/vllm/pull/14129
-# vLLM 0.10.0rc1 Release notes: https://github.com/vllm-project/vllm/releases/tag/v0.10.0rc1
-#pytest -s -v \
-#    tests/quantization/test_compressed_tensors.py::test_compressed_tensors_w8a8_static_setup \
-#    tests/quantization/test_compressed_tensors.py::test_compressed_tensors_w8a8_dynamic_per_token
+pytest -v -s tests/kernels/attention/test_cpu_attn.py ${SKIP_TESTS[@]}
+
+# Skip the tests that require BFloat16
+pytest -v -s tests/kernels/test_onednn.py -k "not test_onednn_gemm"

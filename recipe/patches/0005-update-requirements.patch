@@ -1,0 +1,51 @@
+From 8473d22d87212be1a4a07308ce70ab4cd5cadf60 Mon Sep 17 00:00:00 2001
+From: Andrew Howe <ahowe@anaconda.com>
+Date: Mon, 20 Jul 2026 11:29:47 -0400
+Subject: [PATCH 5/5] update requirements
+
+Some of the requirements need to be updated to work in the conda environment.
+ * remove intel-openmp python requirement. This will be handled
+   through the conda environment: The conda intel-openmp package
+   does not install itself in the python environment, so pip check
+   for intel-openmp will fail if this python requirement is
+   specified, even though the required files are available in
+   the conda environment.
+ * Update setuptools version to a compatible version that is on
+   main/pkgs
+ * update torch package name. The PyPI and main/pkgs channel differ
+   slightly on naming conventions.
+---
+ requirements/cpu.txt | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/requirements/cpu.txt b/requirements/cpu.txt
+index 5ec338af7..e42227621 100644
+--- a/requirements/cpu.txt
++++ b/requirements/cpu.txt
+@@ -2,12 +2,12 @@
+ # Common dependencies
+ -r common.txt
+ 
+-setuptools==77.0.3 # this version can reuse CMake build dir
++setuptools >=77.0.3,<81.0.0 # this version can reuse CMake build dir
+ 
+ numba == 0.65.0; platform_machine != "s390x" # Required for N-gram speculative decoding
+ 
+ # Dependencies for CPUs
+-torch==2.11.0+cpu; platform_machine == "x86_64" or platform_machine == "s390x" or platform_machine == "aarch64"
++torch==2.11.0; platform_machine == "x86_64" or platform_machine == "s390x" or platform_machine == "aarch64"
+ torch==2.11.0; platform_system == "Darwin" or platform_machine == "ppc64le" or platform_machine == "riscv64"
+ 
+ # required for the image processor of minicpm-o-2_6, this must be updated alongside torch
+@@ -17,7 +17,7 @@ torchaudio; platform_machine != "s390x" and platform_machine != "riscv64"
+ torchvision; platform_machine != "s390x"  and platform_machine != "riscv64"
+ 
+ # Intel Extension for PyTorch, only for x86_64 CPUs
+-intel-openmp==2024.2.1; platform_machine == "x86_64"
++# intel-openmp dependency is managed through conda, not through python
+ 
+ # Use this to gather CPU info and optimize based on ARM Neoverse cores
+ py-cpuinfo; platform_machine == "aarch64"
+-- 
+2.51.0
+

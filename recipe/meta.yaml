@@ -1,5 +1,5 @@
 {% set name = "vllm" %}
-{% set version = "0.21.0" %}
+{% set version = "0.26.0" %}
 {% set build_num = 0 %}
 
 {% if cpu_or_cuda =="cuda" %}
@@ -12,7 +12,7 @@ package:
 
 source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
-    sha256: 05ff89c3e926b88b77d7878e317a659ffba678afc21c1d48952037aa5457f058
+    sha256: 23e9fa19d7e20ce7dcc1c074d41503e2116d23f19e688f5d5ea91b741f958502
     patches:
       - patches/0001-Search-for-the-CUDA-package-in-CMakeLists.patch
       - patches/0002-Remove-ninja-pip-requirement.patch
@@ -55,6 +55,7 @@ requirements:
     - packaging >=24.2
     - setuptools >=77.0.3,<81.0.0
     - setuptools-scm >=8
+    - setuptools-rust >=1.9.0
     - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
     - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
     - wheel
@@ -95,36 +96,39 @@ requirements:
     - tqdm
     - blake3
     - py-cpuinfo
-    - transformers >=4.56.0,!=5.0.*,!= 5.1.*,!= 5.2.*,!= 5.3.*,!= 5.4.*,!= 5.5.0
+    - transformers >=5.5.3
+    - safetensors >=0.6.2
     - tokenizers >=0.21.1
     - protobuf >=6.33.5
-    - fastapi >=0.115.0 
+    - fastapi >=0.133.0,<0.137.0
+    - starlette >=1.0.1
     - aiohttp >=3.13.3
     - openai >=2.0.0
     - pydantic >=2.12.0
     - prometheus_client >=0.18.0
     - pillow
-    - prometheus-fastapi-instrumentator >=7.0.0
+    - prometheus-fastapi-instrumentator >=8.0.0
     - tiktoken >=0.6.0
     - lm-format-enforcer ==0.11.3
-    - llguidance >=1.3.0,<1.4.0
+    - llguidance >=1.7.0,<1.8.0
     - outlines-core ==0.2.14
-    - diskcache ==5.6.3
+    #- diskcache ==5.6.3
     - lark ==1.2.2
-    - xgrammar >=0.2.0,<1.0.0
+    - xgrammar >=0.2.1,<1.0.0
+    - jsonschema >=4.23.0
     - typing_extensions >=4.10
     - filelock >=3.16.1 # need to contain https://github.com/tox-dev/filelock/pull/317
     - partial-json-parser
     - pyzmq >=25.0.0
     - msgspec
-    - gguf >=0.17.0
-    - mistral-common >=1.11.2
+    #- gguf >=0.17.0
+    - mistral-common >=1.11.5
     - opencv >=4.13.0=*headless*  # required for video IO
     - pyyaml
     - six >=1.16.0  # [py>311]
     - setuptools >=77.0.3,<81.0.0 # [py>311 or cpu_or_cuda=="cpu"]
     - einops 
-    - compressed-tensors ==0.15.0.1
+    - compressed-tensors ==0.17.0
     - depyf ==0.20.0 # required for profiling and debugging with compilation config
     - cloudpickle
     - watchfiles
@@ -156,6 +160,7 @@ requirements:
     - torchaudio ==2.11.0=*cuda* # [cpu_or_cuda=="cuda"]
     - torchvision ==0.26=*cpu* # [cpu_or_cuda=="cpu"]
     - torchvision ==0.26=*cuda* # [cpu_or_cuda=="cuda"]
+    - torchcodec >=0.14.0
 
     # The intel-openmp version pin differs from the cpu.txt requirements file for these reasons:
     # * There have been some deprecations, in particular the Intel fortran compiler, but this does not appear to affect vLLM

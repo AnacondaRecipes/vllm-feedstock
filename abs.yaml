@@ -1,3 +1,1 @@
 task_timeout: 28800
-channels:
-  - https://staging.continuum.io/pbp/fs/torchcodec-feedstock/pr1/63ea109

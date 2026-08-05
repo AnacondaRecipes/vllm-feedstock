@@ -46,6 +46,7 @@ requirements:
   build:
     - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
     - {{ stdlib('c') }}
+    - {{ compiler('rust') }}
     - cmake >=3.26.1
     - ninja-base
     - git
@@ -112,7 +113,6 @@ requirements:
     - lm-format-enforcer ==0.11.3
     - llguidance >=1.7.0,<1.8.0
     - outlines-core ==0.2.14
-    #- diskcache ==5.6.3
     - lark ==1.2.2
     - xgrammar >=0.2.1,<1.0.0
     - jsonschema >=4.23.0
@@ -121,7 +121,6 @@ requirements:
     - partial-json-parser
     - pyzmq >=25.0.0
     - msgspec
-    #- gguf >=0.17.0
     - mistral-common >=1.11.5
     - opencv >=4.13.0=*headless*  # required for video IO
     - pyyaml
@@ -170,7 +169,6 @@ requirements:
     #   other repurcussions as the feedstock is multi-output and the additional outputs might not be things we want to support
     #   (in particular, MKL).
     - intel-openmp ==2025.0.0 # [x86_64 and cpu_or_cuda=="cpu"]
-    - py-libnuma # [linux and cpu_or_cuda=="cpu"]
 
 
     # from cuda.txt

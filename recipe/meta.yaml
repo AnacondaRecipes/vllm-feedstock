@@ -46,7 +46,6 @@ requirements:
   build:
     - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
     - {{ stdlib('c') }}
-    - {{ compiler('rust') }}
     - cmake >=3.26.1
     - ninja-base
     - git

@@ -32,7 +32,8 @@ build:
   # Does not currently support osx due to xgrammar dependency.
   # Skip python 3.10 for CUDA builds due to a segfault caused by some of the dependencies
   # On CPU builds, skip CUDA 12 builds
-  skip: true  # [py<310 or py>314 or ((osx or aarch64) and gpu_variant=="cuda") or win or osx or (gpu_variant=="cuda" and py==310) or (gpu_variant=="cpu" and (cuda_compiler_version or "12").startswith("12"))]
+  # FIXME: Remove python 3.12 check before publishing PR
+  skip: true  # [py<310 or py>314 or py!=312 or ((osx or aarch64) and gpu_variant=="cuda") or win or osx or (gpu_variant=="cuda" and py==310) or (gpu_variant=="cpu" and (cuda_compiler_version or "12").startswith("12"))]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cpu"]
@@ -89,6 +90,9 @@ requirements:
     # Reference to a specific version here: https://github.com/vllm-project/vllm/blob/v0.26.0/CMakeLists.txt#L439
     # This is the version that vllm uses when vendoring cutlass as part of the build.
     - cutlass ==4.4.2 
+
+    # The vendored deemgeem needs pybind11 headers to build.
+    - pybind11 
 
   run:
 

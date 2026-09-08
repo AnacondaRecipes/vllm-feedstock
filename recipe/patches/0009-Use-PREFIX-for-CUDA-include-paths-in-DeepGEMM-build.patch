@@ -27,7 +27,7 @@ index 67a5274..51936b0 100644
  includes = [
      info["INCLUDEPY"],
      f"{cuda_home}/include",
-@@ -81,5 +90,10 @@ cmd = [
+@@ -81,5 +90,12 @@ cmd = [
      "-o",
      str(out / f"_C{info['EXT_SUFFIX']}"),
  ]
@@ -36,5 +36,7 @@ index 67a5274..51936b0 100644
 +# complements the CONDA_PREFIX override above for include paths.
 +if "PREFIX" in os.environ:
 +    cmd.append(f"-L{os.environ['PREFIX']}/lib")
++cmd.append(f"-I{os.environ['BUILD_ENV']}/targets/x86_64-linux/include")
++cmd.append(f"-I{os.environ['BUILD_ENV']}/targets/arm64-linux/include")
  print("[build_deepgemm_C] " + " ".join(cmd), flush=True)
  subprocess.check_call(cmd)

@@ -36,7 +36,7 @@ index 67a5274..51936b0 100644
 +# complements the CONDA_PREFIX override above for include paths.
 +if "PREFIX" in os.environ:
 +    cmd.append(f"-L{os.environ['PREFIX']}/lib")
-+cmd.append(f"-I{os.environ['BUILD_ENV']}/targets/x86_64-linux/include")
-+cmd.append(f"-I{os.environ['BUILD_ENV']}/targets/arm64-linux/include")
++    cmd.append(f"-I{os.environ['PREFIX']}/targets/x86_64-linux/include")
++    cmd.append(f"-I{os.environ['PREFIX']}/targets/arm64-linux/include")
  print("[build_deepgemm_C] " + " ".join(cmd), flush=True)
  subprocess.check_call(cmd)

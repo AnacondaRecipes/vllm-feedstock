@@ -27,7 +27,7 @@ index 67a5274..51936b0 100644
  includes = [
      info["INCLUDEPY"],
      f"{cuda_home}/include",
-@@ -81,5 +90,12 @@ cmd = [
+@@ -81,5 +90,14 @@ cmd = [
      "-o",
      str(out / f"_C{info['EXT_SUFFIX']}"),
  ]
@@ -38,5 +38,7 @@ index 67a5274..51936b0 100644
 +    cmd.append(f"-L{os.environ['PREFIX']}/lib")
 +    cmd.append(f"-I{os.environ['PREFIX']}/targets/x86_64-linux/include")
 +    cmd.append(f"-I{os.environ['PREFIX']}/targets/arm64-linux/include")
++    cmd.append(f"-I{os.environ['PREFIX']}/targets/x86_64-linux/include/cccl/")
++    cmd.append(f"-I{os.environ['PREFIX']}/targets/arm64-linux/include/cccl/")
  print("[build_deepgemm_C] " + " ".join(cmd), flush=True)
  subprocess.check_call(cmd)

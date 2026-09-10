@@ -1,17 +1,17 @@
-From f024aa0af4bb9e3808806682cb6ce07f052ad245 Mon Sep 17 00:00:00 2001
+From 4ab869a98d47ac9f1062e332ceece70636954762 Mon Sep 17 00:00:00 2001
 From: "Uwe L. Korn" <uwe.korn@quantco.com>
 Date: Thu, 25 Jun 2026 10:32:25 +0200
-Subject: [PATCH 4/5] Allow skipping ACL via VLLM_SKIP_ACL env var
+Subject: [PATCH 4/6] Allow skipping ACL via VLLM_SKIP_ACL env var
 
 ---
  cmake/cpu_extension.cmake | 5 +++++
  1 file changed, 5 insertions(+)
 
 diff --git a/cmake/cpu_extension.cmake b/cmake/cpu_extension.cmake
-index 361f08b51..f477d96ec 100644
+index 3aca9bcea9..7e656cda13 100644
 --- a/cmake/cpu_extension.cmake
 +++ b/cmake/cpu_extension.cmake
-@@ -229,6 +229,8 @@ if (ENABLE_X86_ISA OR (ASIMD_FOUND AND NOT APPLE_SILICON_FOUND) OR POWER9_FOUND
+@@ -256,6 +256,8 @@ if (ENABLE_X86_ISA OR (ASIMD_FOUND AND NOT APPLE_SILICON_FOUND) OR POWER9_FOUND
              set(NPROC 4)
          endif()
  
@@ -20,7 +20,7 @@ index 361f08b51..f477d96ec 100644
          # Fetch and populate ACL
          if(DEFINED ENV{ACL_ROOT_DIR} AND IS_DIRECTORY "$ENV{ACL_ROOT_DIR}")
              message(STATUS "Using ACL from specified source directory: $ENV{ACL_ROOT_DIR}")
-@@ -280,6 +282,9 @@ if (ENABLE_X86_ISA OR (ASIMD_FOUND AND NOT APPLE_SILICON_FOUND) OR POWER9_FOUND
+@@ -307,6 +309,9 @@ if (ENABLE_X86_ISA OR (ASIMD_FOUND AND NOT APPLE_SILICON_FOUND) OR POWER9_FOUND
          # VLLM/oneDNN settings for ACL
          set(ONEDNN_AARCH64_USE_ACL ON CACHE BOOL "" FORCE)
          add_compile_definitions(VLLM_USE_ACL)

@@ -2,7 +2,7 @@
 {% set version = "0.26.0" %}
 {% set build_num = 0 %}
 
-{% if cpu_or_cuda =="cuda" %}
+{% if gpu_variant =="cuda" %}
 {% set build_num = 200 + build_num %}
 {% endif %}
 
@@ -19,33 +19,40 @@ source:
       - patches/0003-Manually-define-gettid.patch
       - patches/0004-Allow-skipping-ACL-via-VLLM_SKIP_ACL-env-var.patch
       - patches/0005-update-requirements.patch
+      - patches/0006-Use-PREFIX-for-CUDA-include-paths-in-DeepGEMM-build.patch
   - url: https://github.com/vllm-project/flash-attention/archive/caaa4eb59845388a20b1f435ecaafb4bd9517ad8.tar.gz
     sha256: bc680ffb076b7f0ea3ff851772622acea950e69f3731f9f5fdeb8887f7dabf2c
     folder: flash-attention
+  # cutlass is a git submodule of flash-attention (not included in GitHub tarballs)
+  - url: https://github.com/NVIDIA/cutlass/archive/62750a2b75c802660e4894434dc55e839f322277.tar.gz
+    sha256: 78816d6c6d97793b5b59ef2a702174cb85b78dfcefc8fe2489964de2e42f17d2
+    folder: flash-attention/csrc/cutlass
 
 build:
   # does not support windows, and only supports CUDA on x86-64
   # Does not currently support osx due to xgrammar dependency.
   # Skip python 3.10 for CUDA builds due to a segfault caused by some of the dependencies
   # On CPU builds, skip CUDA 12 builds
-  skip: true  # [py<310 or py>314 or ((osx or aarch64) and cpu_or_cuda=="cuda") or win or osx or (cpu_or_cuda=="cuda" and py==310) or (cpu_or_cuda=="cpu" and (cuda_compiler_version or "12").startswith("12"))]
+  # FIXME: Remove python 3.12 check before publishing PR
+  skip: true  # [py<310 or py>314 or py!=312 or ((osx or aarch64) and gpu_variant=="cuda") or win or osx or (gpu_variant=="cuda" and py==310) or (gpu_variant=="cpu" and (cuda_compiler_version or "12").startswith("12"))]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
-  string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cpu_or_cuda == "cpu"]
-  string: cuda{{ cuda_compiler_version | replace('.', '') }}_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cpu_or_cuda == "cuda"]
+  string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cpu"]
+  string: cuda{{ cuda_compiler_version | replace('.', '') }}_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cuda"]
   script_env:
     - VERBOSE=1
-    - VLLM_TARGET_DEVICE={{ cpu_or_cuda }}
+    - VLLM_TARGET_DEVICE={{ gpu_variant }}
     - VLLM_SKIP_ACL=1 # [aarch64]
   number: {{ build_num }}
-  missing_dso_whitelist: # [cpu_or_cuda =="cuda"]
+  missing_dso_whitelist: # [gpu_variant =="cuda"]
     # libcuda.so is the cuda driver API library and is a system library.
-    - "**/libcuda.so*"            # [cpu_or_cuda =="cuda"]
+    - "**/libcuda.so*"            # [gpu_variant =="cuda"]
 
 requirements:
   build:
     - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
     - {{ stdlib('c') }}
+    - {{ compiler('cuda') }}     # [gpu_variant=="cuda"]
     - cmake >=3.26.1
     - ninja-base
     - git
@@ -56,32 +63,37 @@ requirements:
     - setuptools >=77.0.3,<81.0.0
     - setuptools-scm >=8
     - setuptools-rust >=1.9.0
-    - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
-    - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
+    - pytorch {{ pytorch }}=*cpu* # [gpu_variant=="cpu"]
+    - pytorch {{ pytorch }}=*cuda* # [gpu_variant=="cuda"]
     - wheel
     - jinja2 >=3.1.6
     - pip
     # Ensures libnuma.so is available for linking
     - libnuma =2.0.19 # [linux]
     - sleef {{ sleef }}
-    - libtorch ={{ libtorch }}=*cpu*openblas* # [cpu_or_cuda=="cpu"]
-    - libtorch ={{ libtorch }}=*cuda* # [cpu_or_cuda=="cuda"]
+    - libtorch ={{ libtorch }}=*cpu*openblas* # [gpu_variant=="cpu"]
+    - libtorch ={{ libtorch }}=*cuda* # [gpu_variant=="cuda"]
     - regex
     # CUDA development headers and libraries (linking only; runtime comes via pytorch).
-    - cuda-version =={{ cuda_compiler_version }}   # [cpu_or_cuda == "cuda"]
-    - cuda-driver-dev                              # [cpu_or_cuda == "cuda"]
-    - cuda-cudart-dev                              # [cpu_or_cuda == "cuda"]
-    - cuda-nvrtc-dev                               # [cpu_or_cuda == "cuda"]
-    - cuda-nvtx-dev                                # [cpu_or_cuda == "cuda"]
-    - cuda-nvml-dev                                # [cpu_or_cuda == "cuda"]
-    - libcublas-dev                                # [cpu_or_cuda == "cuda"]
-    - libcufft-dev                                 # [cpu_or_cuda == "cuda"]
-    - libcurand-dev                                # [cpu_or_cuda == "cuda"]
-    - libcusolver-dev                              # [cpu_or_cuda == "cuda"]
-    - libcusparse-dev                              # [cpu_or_cuda == "cuda"]
+    - cuda-version =={{ cuda_compiler_version }}   # [gpu_variant == "cuda"]
+    - cuda-driver-dev                              # [gpu_variant == "cuda"]
+    - cuda-cudart-dev                              # [gpu_variant == "cuda"]
+    - cuda-nvrtc-dev                               # [gpu_variant == "cuda"]
+    - cuda-nvtx-dev                                # [gpu_variant == "cuda"]
+    - cuda-nvml-dev                                # [gpu_variant == "cuda"]
+    - libcublas-dev                                # [gpu_variant == "cuda"]
+    - libcufft-dev                                 # [gpu_variant == "cuda"]
+    - libcurand-dev                                # [gpu_variant == "cuda"]
+    - libcusolver-dev                              # [gpu_variant == "cuda"]
+    - libcusparse-dev                              # [gpu_variant == "cuda"]
 
     # Not specified in the requirements files, but necessary for the build
-    - cutlass <4.0 # From conda-forge: cutlass 4 introduces significant API changes that causes builds to fail
+    # Reference to a specific version here: https://github.com/vllm-project/vllm/blob/v0.26.0/CMakeLists.txt#L439
+    # This is the version that vllm uses when vendoring cutlass as part of the build.
+    - cutlass ==4.4.2 
+
+    # The vendored deemgeem needs pybind11 headers to build.
+    - pybind11 
 
   run:
 
@@ -124,7 +136,7 @@ requirements:
     - opencv >=4.13.0=*headless*  # required for video IO
     - pyyaml
     - six >=1.16.0  # [py>311]
-    - setuptools >=77.0.3,<81.0.0 # [py>311 or cpu_or_cuda=="cpu"]
+    - setuptools >=77.0.3,<81.0.0 # [py>311 or gpu_variant=="cpu"]
     - einops 
     - compressed-tensors ==0.17.0
     - depyf ==0.20.0 # required for profiling and debugging with compilation config
@@ -149,15 +161,15 @@ requirements:
     # From cpu.txt:
     - numba ==0.65.0 #python version >3.9
     - packaging >=24.2
-    - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
-    - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
-    - libtorch >=2.11.0,<=2.12.0a0=*cpu*openblas* # [cpu_or_cuda=="cpu"]
-    - libtorch >=2.11.0,<=2.12.0a0=*cuda* # [cpu_or_cuda=="cuda"]
+    - pytorch {{ pytorch }}=*cpu* # [gpu_variant=="cpu"]
+    - pytorch {{ pytorch }}=*cuda* # [gpu_variant=="cuda"]
+    - libtorch >=2.11.0,<=2.12.0a0=*cpu*openblas* # [gpu_variant=="cpu"]
+    - libtorch >=2.11.0,<=2.12.0a0=*cuda* # [gpu_variant=="cuda"]
 
-    - torchaudio ==2.11.0=*cpu* # [cpu_or_cuda=="cpu"]
-    - torchaudio ==2.11.0=*cuda* # [cpu_or_cuda=="cuda"]
-    - torchvision ==0.26=*cpu* # [cpu_or_cuda=="cpu"]
-    - torchvision ==0.26=*cuda* # [cpu_or_cuda=="cuda"]
+    - torchaudio ==2.11.0=*cpu* # [gpu_variant=="cpu"]
+    - torchaudio ==2.11.0=*cuda* # [gpu_variant=="cuda"]
+    - torchvision ==0.26=*cpu* # [gpu_variant=="cpu"]
+    - torchvision ==0.26=*cuda* # [gpu_variant=="cuda"]
     - torchcodec >=0.14.0
 
     # The intel-openmp version pin differs from the cpu.txt requirements file for these reasons:
@@ -167,31 +179,59 @@ requirements:
     # * conda does not currently have a 2024.2.1 build (the version pinned in cpu.txt), and building one just for vLLM could have
     #   other repurcussions as the feedstock is multi-output and the additional outputs might not be things we want to support
     #   (in particular, MKL).
-    - intel-openmp ==2025.0.0 # [x86_64 and cpu_or_cuda=="cpu"]
+    - intel-openmp ==2025.0.0 # [x86_64 and gpu_variant=="cpu"]
 
 
     # from cuda.txt
-    - __cuda   # [cpu_or_cuda == "cuda"]
-    - llvm-openmp # [ cpu_or_cuda=="cuda"]
+    - __cuda   # [gpu_variant == "cuda"]
+    - cuda-version =={{ cuda_compiler_version }}   # [gpu_variant == "cuda"]
+    - llvm-openmp # [ gpu_variant=="cuda"]
     # pytorch is in cuda.txt and cpu.txt
     
 
     # Note from Charles about ray: https://anaconda.slack.com/archives/C08940LAV4Y/p1775579243337879?thread_ts=1775484005.040459&cid=C08940LAV4Y
-    - ray-core # [cpu_or_cuda=="cuda"]
-    - ray-adag # [cpu_or_cuda=="cuda"]
-    - cupy # [cpu_or_cuda=="cuda"]
-    - xformers ==0.0.30  # [linux and cpu_or_cuda=="cuda"]
+    - ray-core # [gpu_variant=="cuda"]
+    - ray-adag # [gpu_variant=="cuda"]
+    - cupy # [gpu_variant=="cuda"]
+    - fastsafetensors >=0.3.2 # [gpu_variant=="cuda"]
+    - nvtx ==0.2.15 # [gpu_variant=="cuda"]
+    - apache-tvm-ffi ==0.1.10 # [gpu_variant=="cuda"]
+    - tilelang ==0.1.9 # [gpu_variant=="cuda"]
+    - python-cudnn-frontend >=1.19.1 # [gpu_variant=="cuda"]
+    
+
+    # Tokenspeed-mla is not needed for every use case. It is an optimization
+    # for MLA workloads, which already have fallbacks.
+    #- tokenspeed-mla ==0.1.8 # [gpu_variant=="cuda"]
+    # Humming kernels is not strictly required for vLLM, despite being in the cuda.txt
+    # requirements. vLLM will work without it, and there are checks to make sure the
+    # library is present before using the features that require it.
+    #- humming-kernels[cu13] ==0.1.10 # [gpu_variant=="cuda"] # TODO: Make sure this is correct for [cu13]
+    #- pynvvideocodec Optional depenency?
+    #- flashinfer-python Optional dependency
+    #- flashinfer-cubin Optional dependency
+    # 
+    # nvidia-cutlass-dsl is an optional dependency with fallback paths if it isn't present,
+    # despite it being listed in the cuda.txt requirements file.
+    #- nvidia-cutlass-dsl[cu13] Optional Dependency
+
+    # quack-kernels is an optional dependency only used with FlashAttention4 and
+    # CuteDSL.
+    #- quack-kernels Optional Dependency
+
+    
+    #- cuda-cudart                                  # [gpu_variant == "cuda"]
   
 test:
   source_files:
     - tests/
   files:
-    - cpu-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cpu"]
-    - cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
-    - cuda-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cuda"]
+    - cpu-tests_linux-64.sh # [(linux and x86_64) and gpu_variant=="cpu"]
+    - cpu-tests_linux-aarch64.sh # [(linux and aarch64) and gpu_variant=="cpu"]
+    - cuda-tests_linux-64.sh # [(linux and x86_64) and gpu_variant=="cuda"]
   script_env:
     - VERBOSE=1
-    - VLLM_TARGET_DEVICE={{ cpu_or_cuda }}
+    - VLLM_TARGET_DEVICE={{ gpu_variant }}
   imports:
     - vllm
     - pip
@@ -200,12 +240,12 @@ test:
     - pip list
     - pip check
     - vllm --help
-    - chmod +x cpu-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cpu"]
-    - ./cpu-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cpu"]
-    - chmod +x cuda-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cuda"]
-    - ./cuda-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cuda"]
-    - chmod +x cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
-    - ./cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
+    - chmod +x cpu-tests_linux-64.sh # [(linux and x86_64) and gpu_variant=="cpu"]
+    - ./cpu-tests_linux-64.sh # [(linux and x86_64) and gpu_variant=="cpu"]
+    - chmod +x cuda-tests_linux-64.sh # [(linux and x86_64) and gpu_variant=="cuda"]
+    - ./cuda-tests_linux-64.sh # [(linux and x86_64) and gpu_variant=="cuda"]
+    - chmod +x cpu-tests_linux-aarch64.sh # [(linux and aarch64) and gpu_variant=="cpu"]
+    - ./cpu-tests_linux-aarch64.sh # [(linux and aarch64) and gpu_variant=="cpu"]
 
   requires:
     - pytest

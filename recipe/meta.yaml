@@ -19,7 +19,7 @@ source:
       - patches/0003-Manually-define-gettid.patch
       - patches/0004-Allow-skipping-ACL-via-VLLM_SKIP_ACL-env-var.patch
       - patches/0005-update-requirements.patch
-      - patches/0009-Use-PREFIX-for-CUDA-include-paths-in-DeepGEMM-build.patch
+      - patches/0006-Use-PREFIX-for-CUDA-include-paths-in-DeepGEMM-build.patch
   - url: https://github.com/vllm-project/flash-attention/archive/caaa4eb59845388a20b1f435ecaafb4bd9517ad8.tar.gz
     sha256: bc680ffb076b7f0ea3ff851772622acea950e69f3731f9f5fdeb8887f7dabf2c
     folder: flash-attention

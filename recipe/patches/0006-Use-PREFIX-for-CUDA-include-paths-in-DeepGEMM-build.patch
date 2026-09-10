@@ -1,0 +1,30 @@
+From c75a0f642361c1f0b1a99f4ad22a9ca36e84cfd9 Mon Sep 17 00:00:00 2001
+From: "Uwe L. Korn" <70274+xhochy@users.noreply.github.com>
+Date: Fri, 26 Jun 2026 08:44:03 +0000
+Subject: [PATCH 6/6] Use PREFIX for CUDA include paths in DeepGEMM build
+
+NOTE: Modified by ahowe@anaconda.com for main channel use, instead of conda-forge channel
+---
+ tools/build_deepgemm_C.py | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/tools/build_deepgemm_C.py b/tools/build_deepgemm_C.py
+index 67a527405e..34cda26cce 100644
+--- a/tools/build_deepgemm_C.py
++++ b/tools/build_deepgemm_C.py
+@@ -81,5 +81,12 @@ cmd = [
+     "-o",
+     str(out / f"_C{info['EXT_SUFFIX']}"),
+ ]
++# CUDA libraries (e.g. libnvrtc.so) and tools not in standard
++# location under CUDA_HOME, so add it explicitly for the linker.
++if "PREFIX" in os.environ:
++    cmd.append(f"-I{os.environ['PREFIX']}/targets/x86_64-linux/include")
++    cmd.append(f"-I{os.environ['PREFIX']}/targets/arm64-linux/include")
++    cmd.append(f"-I{os.environ['PREFIX']}/targets/x86_64-linux/include/cccl/")
++    cmd.append(f"-I{os.environ['PREFIX']}/targets/arm64-linux/include/cccl/")
+ print("[build_deepgemm_C] " + " ".join(cmd), flush=True)
+ subprocess.check_call(cmd)
+-- 
+2.51.0
+

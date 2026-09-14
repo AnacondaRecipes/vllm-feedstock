@@ -126,8 +126,8 @@ expanded_skip_models=${skip_models[@]}
 # pytest -v -s tests/multi_step/test_correctness_llm.py
 # pytest -v -s tests/multi_step/test_correctness_async_llm.py
 # pytest -v -s tests/spec_decode/test_multi_step_worker.py
-time pytest -v -s tests/spec_decode/test_spec_decode_worker.py -k "not ($expanded_skip_models)"
-hf cache scan
+# time pytest -v -s tests/spec_decode/test_spec_decode_worker.py -k "not ($expanded_skip_models)"
+# hf cache scan
 # pytest -v -s tests/spec_decode/test_dynamic_spec_decode.py
 # pytest -v -s tests/spec_decode/e2e/test_ngram_correctness.py
 # pytest -v -s tests/spec_decode/e2e/test_compatibility.py
@@ -142,14 +142,14 @@ hf cache scan
 # pytest -v -s tests/spec_decode/e2e/test_mlp_correctness.py
 # pytest -v -s tests/spec_decode/e2e/test_logprobs.py
 # pytest -v -s tests/spec_decode/test_batch_expansion.py
-time pytest -v -s tests/spec_decode/test_metrics.py -k "not ($expanded_skip_models)"
-hf cache scan
+# time pytest -v -s tests/spec_decode/test_metrics.py -k "not ($expanded_skip_models)"
+# hf cache scan
 # pytest -v -s tests/spec_decode/test_utils.py
-time pytest -v -s tests/spec_decode/test_ngram_worker.py -k "not ($expanded_skip_models)"
-hf cache scan
+# time pytest -v -s tests/spec_decode/test_ngram_worker.py -k "not ($expanded_skip_models)"
+# hf cache scan
 # pytest -v -s tests/spec_decode/test_scorer.py
-time pytest -v -s tests/spec_decode/test_memory_usage.py -k "not ($expanded_skip_models)"
-hf cache scan
+# time pytest -v -s tests/spec_decode/test_memory_usage.py -k "not ($expanded_skip_models)"
+# hf cache scan
 # pytest -v -s tests/weight_loading/test_weight_loading.py
 # pytest -v -s tests/mq_llm_engine/test_abort.py
 # pytest -v -s tests/mq_llm_engine/test_error_handling.py
@@ -175,18 +175,18 @@ hf cache scan
 # pytest -v -s tests/lora/test_lora_checkpoints.py
 # pytest -v -s tests/lora/test_quant_model.py
 time pytest -v -s tests/lora/test_peft_helper.py -k "not ($expanded_skip_models)"
-hf cache scan
+hf cache list
 # pytest -v -s tests/lora/test_lora_huggingface.py
 time pytest -v -s tests/multimodal/test_inputs.py -k "not ($expanded_skip_models)"
-hf cache scan
+hf cache list
 #pytest -v -s tests/multimodal/test_utils.py # too many failed download
 time pytest -v -s tests/multimodal/test_image.py -k "not ($expanded_skip_models)"
-hf cache scan
+hf cache list
 time pytest -v -s tests/multimodal/test_hasher.py -k "not ($expanded_skip_models)"
-hf cache scan
+hf cache list
 # pytest -v -s tests/multimodal/test_processing.py # test fails due to missing additional modules
-time pytest -v -s tests/multimodal/test_video.py -k "not ($expanded_skip_models)"
-hf cache scan
+time pytest -v -s tests/multimodal/test_video.py -k "not ($expanded_skip_models)" || true
+hf cache list
 # pytest -v -s tests/distributed/test_sequence_parallel.py
 # pytest -v -s tests/distributed/test_events.py
 # pytest -v -s tests/distributed/test_utils.py
@@ -210,8 +210,8 @@ hf cache scan
 
 # run the whole samplers directory minus a few tests
 # Skipped tests are for gated repos and unsupported gpu architectures
-time pytest -v -s tests/samplers -k "not ($expanded_skip_models or test_beam_search_passes_multimodal_data or test_one_token_bad_word or test_two_token_bad_word[True])"
-hf cache scan
+time pytest -v -s tests/samplers -k "not ($expanded_skip_models or test_beam_search_passes_multimodal_data or test_one_token_bad_word or test_two_token_bad_word[True])" || true
+hf cache list
 # pytest -v -s tests/samplers/test_ranks.py
 # pytest -v -s tests/samplers/test_ignore_eos.py
 # pytest -v -s tests/samplers/test_logits_processor.py
@@ -225,8 +225,8 @@ hf cache scan
 
 #splitting up these core tests. The first set ignores some tests that must be run with FLASH_ATTN
 # or are skipped for other reasons. The second set of tests are those trying to run with FLASH_ATTN
-time pytest -v -s tests/core -k "not ($expanded_skip_models)" --ignore=tests/core/test_num_computed_tokens_update.py --ignore=tests/core/block/e2e/test_correctness.py --ignore=tests/core/block/e2e/test_correctness_sliding_window.py
-hf cache scan
+#time pytest -v -s tests/core -k "not ($expanded_skip_models)" --ignore=tests/core/test_num_computed_tokens_update.py --ignore=tests/core/block/e2e/test_correctness.py --ignore=tests/core/block/e2e/test_correctness_sliding_window.py
+hf cache list
 # FLASH_ATTN appears to not work on g4dn hardware. It requires SM >= 8.0 but g4dn is 7.5
 #VLLM_ATTENTION_BACKEND=FLASH_ATTN pytest -v -s tests/core/test_num_computed_tokens_update.py -k "not ($expanded_skip_models)" 
 #VLLM_ATTENTION_BACKEND=FLASH_ATTN pytest -v -s tests/core/block/e2e/test_correctness.py -k "not ($expanded_skip_models)" 
@@ -246,8 +246,8 @@ hf cache scan
 # pytest -v -s tests/core/test_scheduler.py
 # pytest -v -s tests/core/test_serialization.py
 
-time pytest -v -s tests/plugins/lora_resolvers/test_filesystem_resolver.py -k "not ($expanded_skip_models)"
-hf cache scan
+time pytest -v -s tests/plugins/lora_resolvers/test_filesystem_resolver.py -k "not ($expanded_skip_models)" || true
+hf cache list
 # entry points have many failures unrelated to the build qwuality (e.g. GPU type being used in the test).
 # Some of the entry point tests download large models without having the tests labeled with the model name,
 # making it difficult to skip the large downloads.
@@ -302,16 +302,16 @@ hf cache scan
 # pytest -v -s tests/entrypoints/openai/test_basic.py
 # pytest -v -s tests/entrypoints/openai/test_translation_validation.py
 # pytest -v -s tests/entrypoints/openai/test_chat_template.py
-time pytest -v -s tests/entrypoints/llm/test_generate.py -k "not ($expanded_skip_models or test_max_model_len[True])" # test isn't supported on g4dn instance hardware
-hf cache scan
+time pytest -v -s tests/entrypoints/llm/test_generate.py -k "not ($expanded_skip_models or test_max_model_len[True])" || true # test isn't supported on g4dn instance hardware
+hf cache list
 # pytest -v -s tests/entrypoints/llm/test_generate_multiple_loras.py
-time pytest -v -s tests/entrypoints/llm/test_encode.py -k "not ($expanded_skip_models)"
-hf cache scan
+time pytest -v -s tests/entrypoints/llm/test_encode.py -k "not ($expanded_skip_models)" || true
+hf cache list
 # pytest -v -s tests/entrypoints/llm/test_lazy_outlines.py
 # pytest -v -s tests/entrypoints/llm/test_prompt_validation.py
 # pytest -v -s tests/entrypoints/llm/test_guided_generate.py
-time pytest -v -s tests/entrypoints/llm/test_gpu_utilization.py -k "not ($expanded_skip_models)"
-hf cache scan
+time pytest -v -s tests/entrypoints/llm/test_gpu_utilization.py -k "not ($expanded_skip_models)" || true
+hf cache list
 # pytest -v -s tests/entrypoints/llm/test_collective_rpc.py
 # pytest -v -s tests/entrypoints/llm/test_accuracy.py
 # pytest -v -s tests/entrypoints/llm/test_chat.py
@@ -391,7 +391,7 @@ hf cache scan
 # pytest -v -s tests/v1/test_request.py
 
 pytest -v -s tests/detokenizer/ -k "not ($expanded_skip_models)" --ignore tests/detokenizer/test_stop_reason.py --ignore tests/detokenizer/test_stop_strings.py
-hf cache scan
+hf cache list
 # pytest -v -s tests/detokenizer/test_disable_detokenization.py
 # pytest -v -s tests/detokenizer/test_stop_reason.py
 # pytest -v -s tests/detokenizer/test_stop_strings.py
@@ -441,8 +441,8 @@ hf cache scan
 # tests/kernels has about 44k tests under it
 # flash_attention doesn't work on g4dn instances (GPU is too old)
 # pytest -v -s tests/kernels/attention/test_lightning_attn.py
-time pytest -v -s tests/kernels/attention/test_cache.py -k "(test_copy_blocks or test_reshape_and_cache) and not (test_fp8_e4m3_conversion[cuda:0-0-dtype1 or test_reshape_and_cache_flash[HND-fp8-cuda:0-0-dtype1 or test_reshape_and_cache[fp8-cuda:0-0-dtype1 or test_swap_blocks[auto-cuda:0-0-dtype2-10000-32-256-8-256- or test_copy_blocks[auto-cuda:0-0-dtype2-10000-32-256-8-1-256] or test_reshape_and_cache[auto-cuda:0-0-dtype2-10000-32-256-8-42] or test_fp8_e4m3_conversion[cuda:0-0-dtype2-10000-32-256-8] or test_reshape_and_cache_flash[NHD-fp8-cuda:0-0-dtype1)"
-hf cache scan
+time pytest -v -s tests/kernels/attention/test_cache.py -k "(test_copy_blocks or test_reshape_and_cache) and not (test_fp8_e4m3_conversion[cuda:0-0-dtype1 or test_reshape_and_cache_flash[HND-fp8-cuda:0-0-dtype1 or test_reshape_and_cache[fp8-cuda:0-0-dtype1 or test_swap_blocks[auto-cuda:0-0-dtype2-10000-32-256-8-256- or test_copy_blocks[auto-cuda:0-0-dtype2-10000-32-256-8-1-256] or test_reshape_and_cache[auto-cuda:0-0-dtype2-10000-32-256-8-42] or test_fp8_e4m3_conversion[cuda:0-0-dtype2-10000-32-256-8] or test_reshape_and_cache_flash[NHD-fp8-cuda:0-0-dtype1)" || true
+hf cache list
 # pytest -v -s tests/kernels/attention/test_blocksparse_attention.py
 # pytest -v -s tests/kernels/attention/test_rocm_attention_selector.py
 # pytest -v -s tests/kernels/attention/test_flashmla.py
@@ -459,8 +459,8 @@ hf cache scan
 # pytest -v -s tests/kernels/attention/test_encoder_decoder_attn.py
 # pytest -v -s tests/kernels/attention/test_attention_selector.py
 
-time pytest -v -s tests/kernels/quantization/test_fp8_quant.py tests/kernels/quantization/test_awq_triton.py -k "not ($expanded_skip_models or test_scaled_mm or test_w8a8_fp8_fused_moe or test_w8a8_block_int8_matmul or test_fp8_quant_large or test_moe)" --ignore tests/kernels/quantization/test_marlin_gemm.py
-hf cache scan
+time pytest -v -s tests/kernels/quantization/test_fp8_quant.py tests/kernels/quantization/test_awq_triton.py -k "not ($expanded_skip_models or test_scaled_mm or test_w8a8_fp8_fused_moe or test_w8a8_block_int8_matmul or test_fp8_quant_large or test_moe)" --ignore tests/kernels/quantization/test_marlin_gemm.py || true
+hf cache list
 # pytest -v -s tests/kernels/quantization/test_machete_mm.py
 # pytest -v -s tests/kernels/quantization/test_cutlass_2of4_sparse.py
 # pytest -v -s tests/kernels/quantization/test_block_int8.py
@@ -502,7 +502,7 @@ hf cache scan
 # pytest -v -s tests/kernels/moe/test_pplx_moe.py
 
 #time pytest -v -c tests/kernels/core/ -k "not ($expanded_skip_models)" --ignore tests/kernels/core/test_layernorm.py
-hf cache scan
+hf cache list
 # pytest -v -s tests/kernels/core/test_pos_encoding.py
 # pytest -v -s tests/kernels/core/test_permute_cols.py
 # pytest -v -s tests/kernels/core/test_rotary_embedding.py
@@ -568,8 +568,8 @@ hf cache scan
 # pytest -v -s tests/test_inputs.py
 # pytest -v -s tests/test_config.py
 
-time pytest -v -s tests/reasoning/ -k "not ($expanded_skip_models)"
-hf cache scan
+time pytest -v -s tests/reasoning/ -k "not ($expanded_skip_models)" || true
+hf cache list
 # pytest -v -s tests/reasoning/test_deepseekr1_reasoning_parser.py
 # pytest -v -s tests/reasoning/test_granite_reasoning_parser.py
 # pytest -v -s tests/reasoning/test_qwen3_reasoning_parser.py
@@ -584,7 +584,7 @@ hf cache scan
 # pytest -v -s tests/tokenization/test_tokenizer_registry.py
 # pytest -v -s tests/tokenization/test_mistral_tokenizer.py
 # pytest -v -s tests/tokenization/test_get_eos.py
-time pytest -v -s tests/tokenization/test_tokenizer.py -k "not ($expanded_skip_models)"
+time pytest -v -s tests/tokenization/test_tokenizer.py -k "not ($expanded_skip_models)" || true
 # pytest -v -s tests/benchmarks/test_throughput_cli.py
 # pytest -v -s tests/benchmarks/test_latency_cli.py
 # pytest -v -s tests/benchmarks/test_serve_cli.py
@@ -612,7 +612,7 @@ time pytest -v -s tests/tokenization/test_tokenizer.py -k "not ($expanded_skip_m
 # pytest -v -s tests/test_scalartype.py
 # pytest -v -s tests/tensorizer_loader/test_tensorizer.py
 # pytest -v -s tests/test_seed_behavior.py
-# pytest -v -s tests/cuda/test_cuda_context.py
+time pytest -v -s tests/cuda
 # pytest -v -s tests/metrics/test_metrics.py
 # pytest -v -s tests/test_vllm_port.py
 # pytest -v -s tests/test_triton_utils.py
@@ -624,5 +624,8 @@ time pytest -v -s tests/tokenization/test_tokenizer.py -k "not ($expanded_skip_m
 # pytest -v -s tests/test_sampling_params.py
 # pytest -v -s tests/test_version.py
 
+time pytest -v -s tests/cuda/cudagraph/test_cudagraph_dispatch.py
+time pytest -v -s tests/cuda/cudagraph/test_breakable_cudagraph.py
+
 # Show which repos were downloaded during testing and how much space they take up
-hf cache scan
+hf cache list

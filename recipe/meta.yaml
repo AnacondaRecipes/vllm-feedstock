@@ -207,7 +207,9 @@ requirements:
     # requirements. vLLM will work without it, and there are checks to make sure the
     # library is present before using the features that require it.
     #- humming-kernels[cu13] ==0.1.10 # [gpu_variant=="cuda"] # TODO: Make sure this is correct for [cu13]
-    #- pynvvideocodec Optional depenency?
+    # pynvvideocodec is optional, and must be explicitly selected by a user (if available) in order to use it.
+    # There are fallbacks (torchcodec/opencv)
+    #- pynvvideocodec Optional depenency
     #- flashinfer-python Optional dependency
     #- flashinfer-cubin Optional dependency
     # 
@@ -219,9 +221,6 @@ requirements:
     # CuteDSL.
     #- quack-kernels Optional Dependency
 
-    
-    #- cuda-cudart                                  # [gpu_variant == "cuda"]
-  
 test:
   source_files:
     - tests/

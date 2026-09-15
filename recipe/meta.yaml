@@ -254,6 +254,8 @@ test:
     - tblib
     - accelerate
     - sentence-transformers
+    # 'av' needed for some tests. Version from requirements/tests/cuda.txt
+    - av ==16.1.0
     - {{ compiler('cxx') }}   # [linux] Required by torch.compile (inductor) at runtime
 
 about:

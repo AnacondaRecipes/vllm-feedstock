@@ -1,10 +1,10 @@
 gpu_variant:
-  - cpu 
+  #- cpu 
   - cuda
   - cuda
 
 cuda_compiler_version:
-  - None
+  #- None
   - 12.9
   - 13.0
 

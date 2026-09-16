@@ -1,11 +1,11 @@
 gpu_variant:
-  #- cpu 
-  #- cuda
+  - cpu 
+  - cuda
   - cuda
 
 cuda_compiler_version:
-  #- None
-  #- 12.9
+  - None
+  - 12.9
   - 13.0
 
 pytorch:

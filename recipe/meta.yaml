@@ -161,6 +161,14 @@ requirements:
     - opentelemetry-exporter-otlp >=1.27.0
     - opentelemetry-semantic-conventions-ai >=0.4.1
 
+    # at least one package above requires huggingface_hub. Normally we could let the dependency 
+    # solver deal with that, but a recent release of typer introduced a crash in huggingface_hub,
+    # so we need to restrict the huggingface_hub and typer versions. This is not necessary if
+    # huggingface_hub >=1.22 is used.
+    # TODO: Wait for hotfix fr this issue, and remove these dependencies before releasing this package
+    - huggingface_hub <=1.15.0
+    - typer <0.26.0a0
+
     # From cpu.txt:
     - numba ==0.65.0 #python version >3.9
     - packaging >=24.2

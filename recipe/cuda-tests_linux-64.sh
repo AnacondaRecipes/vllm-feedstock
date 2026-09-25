@@ -44,6 +44,12 @@ skip_models=(
 
 expanded_skip_models=${skip_models[@]}
 
+VLLM_USE_FLASHINFER_SAMPLER=0 pytest -v -s tests/entrypoints/llm/test_generate.py
+VLLM_USE_FLASHINFER_SAMPLER=0 pytest -v -s tests/entrypoints/llm/test_gpu_utilization.py
+VLLM_USE_FLASHINFER_SAMPLER=0 pytest -v -s tests/test_regression.py
+VLLM_USE_FLASHINFER_SAMPLER=0 pytest -v -s tests/v1/e2e/general/test_min_tokens.py
+VLLM_USE_FLASHINFER_SAMPLER=0 pytest -v -s tests/v1/e2e/general/test_context_length.py
+
 time pytest -v -s tests/lora/test_peft_helper.py -k "not ($expanded_skip_models)"
 hf cache list
 
@@ -65,7 +71,12 @@ hf cache list
 # tests/multimodal/test_video.py::test_video_processor_from_model_repo[qwen3vl]
 # tests/multimodal/test_video.py::test_video_processor_from_model_repo[qwen2vl]
 # tests/multimodal/test_video.py::test_video_processor_from_model_repo[qwen2_5_vl]
-time pytest -v -s tests/multimodal/test_video.py -k "not ($expanded_skip_models or test_video_processor_from_model_repo[glm4v] or test_video_processor_from_model_repo[glm46v] or test_video_processor_from_model_repo[qwen3vl] or test_video_processor_from_model_repo[qwen2vl] or test_video_processor_from_model_repo[qwen2_5_vl] )"
+# av package not available for python 3.10, so skip the av tests in that case
+if python -c "import sys; exit(0 if sys.version_info.major != 3 or sys.version_info.minor <= 10 else 1)"; then
+   echo "Must skip pyav tests"
+   pyav_tests="or pyav or test_torchcodec_backend_returns_target_frames_not_keyframes"
+fi
+time pytest -v -s tests/multimodal/test_video.py -k "not ($expanded_skip_models or test_video_processor_from_model_repo[glm4v] or test_video_processor_from_model_repo[glm46v] or test_video_processor_from_model_repo[qwen3vl] or test_video_processor_from_model_repo[qwen2vl] or test_video_processor_from_model_repo[qwen2_5_vl] $pyav_tests)"
 hf cache list
 
 # run the whole samplers directory minus a few tests

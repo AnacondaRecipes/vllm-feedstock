@@ -1,18 +1,15 @@
 {% set name = "vllm" %}
-{% set version = "0.26.0" %}
+{% set version = "0.30.0" %}
 {% set build_num = 0 %}
-
-{% if cpu_or_cuda =="cuda" %}
 {% set build_num = 200 + build_num %}
-{% endif %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
-    sha256: 23e9fa19d7e20ce7dcc1c074d41503e2116d23f19e688f5d5ea91b741f958502
+  - url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
+    sha256: 5f8f4e890c042ffa1c3e103f81c35e2d96f60a0a175ac43a4adbae7006bef62b
     patches:
       - patches/0001-Search-for-the-CUDA-package-in-CMakeLists.patch
       - patches/0002-Remove-ninja-pip-requirement.patch
@@ -36,55 +33,51 @@ build:
   script_env:
     - VERBOSE=1
     - VLLM_TARGET_DEVICE={{ cpu_or_cuda }}
-    - VLLM_SKIP_ACL=1 # [aarch64]
-  number: {{ build_num }}
-  missing_dso_whitelist: # [cpu_or_cuda =="cuda"]
+    - VLLM_SKIP_ACL=1  # [aarch64]
+  number: 0
+  missing_dso_whitelist:  # [cpu_or_cuda =="cuda"]
     # libcuda.so is the cuda driver API library and is a system library.
-    - "**/libcuda.so*"            # [cpu_or_cuda =="cuda"]
+    - "**/libcuda.so*"  # [cpu_or_cuda =="cuda"]
 
 requirements:
   build:
-    - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
+    - {{ compiler('cxx') }}  # Ensures a C++ compiler is available
     - {{ stdlib('c') }}
     - cmake >=3.26.1
     - ninja-base
     - git
-
   host:
     - python
     - packaging >=24.2
     - setuptools >=77.0.3,<81.0.0
     - setuptools-scm >=8
     - setuptools-rust >=1.9.0
-    - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
-    - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
+    - pytorch {{ pytorch }}=*cpu*  # [cpu_or_cuda=="cpu"]
+    - pytorch {{ pytorch }}=*cuda*  # [cpu_or_cuda=="cuda"]
     - wheel
     - jinja2 >=3.1.6
     - pip
     # Ensures libnuma.so is available for linking
-    - libnuma =2.0.19 # [linux]
+    - libnuma =2.0.19  # [linux]
     - sleef {{ sleef }}
-    - libtorch ={{ libtorch }}=*cpu*openblas* # [cpu_or_cuda=="cpu"]
-    - libtorch ={{ libtorch }}=*cuda* # [cpu_or_cuda=="cuda"]
+    - libtorch ={{ libtorch }}=*cpu*openblas*  # [cpu_or_cuda=="cpu"]
+    - libtorch ={{ libtorch }}=*cuda*  # [cpu_or_cuda=="cuda"]
     - regex
     # CUDA development headers and libraries (linking only; runtime comes via pytorch).
-    - cuda-version =={{ cuda_compiler_version }}   # [cpu_or_cuda == "cuda"]
-    - cuda-driver-dev                              # [cpu_or_cuda == "cuda"]
-    - cuda-cudart-dev                              # [cpu_or_cuda == "cuda"]
-    - cuda-nvrtc-dev                               # [cpu_or_cuda == "cuda"]
-    - cuda-nvtx-dev                                # [cpu_or_cuda == "cuda"]
-    - cuda-nvml-dev                                # [cpu_or_cuda == "cuda"]
-    - libcublas-dev                                # [cpu_or_cuda == "cuda"]
-    - libcufft-dev                                 # [cpu_or_cuda == "cuda"]
-    - libcurand-dev                                # [cpu_or_cuda == "cuda"]
-    - libcusolver-dev                              # [cpu_or_cuda == "cuda"]
-    - libcusparse-dev                              # [cpu_or_cuda == "cuda"]
-
+    - cuda-version =={{ cuda_compiler_version }}  # [cpu_or_cuda == "cuda"]
+    - cuda-driver-dev  # [cpu_or_cuda == "cuda"]
+    - cuda-cudart-dev  # [cpu_or_cuda == "cuda"]
+    - cuda-nvrtc-dev  # [cpu_or_cuda == "cuda"]
+    - cuda-nvtx-dev  # [cpu_or_cuda == "cuda"]
+    - cuda-nvml-dev  # [cpu_or_cuda == "cuda"]
+    - libcublas-dev  # [cpu_or_cuda == "cuda"]
+    - libcufft-dev  # [cpu_or_cuda == "cuda"]
+    - libcurand-dev  # [cpu_or_cuda == "cuda"]
+    - libcusolver-dev  # [cpu_or_cuda == "cuda"]
+    - libcusparse-dev  # [cpu_or_cuda == "cuda"]
     # Not specified in the requirements files, but necessary for the build
-    - cutlass <4.0 # From conda-forge: cutlass 4 introduces significant API changes that causes builds to fail
-
+    - cutlass <4.0  # From conda-forge: cutlass 4 introduces significant API changes that causes builds to fail
   run:
-
     - python
     # From common.txt
     - regex
@@ -116,7 +109,7 @@ requirements:
     - xgrammar >=0.2.1,<1.0.0
     - jsonschema >=4.23.0
     - typing_extensions >=4.10
-    - filelock >=3.16.1 # need to contain https://github.com/tox-dev/filelock/pull/317
+    - filelock >=3.16.1  # need to contain https://github.com/tox-dev/filelock/pull/317
     - partial-json-parser
     - pyzmq >=25.0.0
     - msgspec
@@ -124,15 +117,14 @@ requirements:
     - opencv >=4.13.0=*headless*  # required for video IO
     - pyyaml
     - six >=1.16.0  # [py>311]
-    - setuptools >=77.0.3,<81.0.0 # [py>311 or cpu_or_cuda=="cpu"]
-    - einops 
+    - setuptools >=77.0.3,<81.0.0  # [py>311 or cpu_or_cuda=="cpu"]
+    - einops
     - compressed-tensors ==0.17.0
-    - depyf ==0.20.0 # required for profiling and debugging with compilation config
+    - depyf ==0.20.0  # required for profiling and debugging with compilation config
     - cloudpickle
     - watchfiles
     - python-json-logger
     - pybase64
-
     # New for v0.21.0
     - cbor2
     - ijson
@@ -145,21 +137,18 @@ requirements:
     - opentelemetry-api >=1.27.0
     - opentelemetry-exporter-otlp >=1.27.0
     - opentelemetry-semantic-conventions-ai >=0.4.1
-
     # From cpu.txt:
-    - numba ==0.65.0 #python version >3.9
+    - numba ==0.65.0  #python version >3.9
     - packaging >=24.2
-    - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
-    - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
-    - libtorch >=2.11.0,<=2.12.0a0=*cpu*openblas* # [cpu_or_cuda=="cpu"]
-    - libtorch >=2.11.0,<=2.12.0a0=*cuda* # [cpu_or_cuda=="cuda"]
-
-    - torchaudio ==2.11.0=*cpu* # [cpu_or_cuda=="cpu"]
-    - torchaudio ==2.11.0=*cuda* # [cpu_or_cuda=="cuda"]
-    - torchvision ==0.26=*cpu* # [cpu_or_cuda=="cpu"]
-    - torchvision ==0.26=*cuda* # [cpu_or_cuda=="cuda"]
+    - pytorch {{ pytorch }}=*cpu*  # [cpu_or_cuda=="cpu"]
+    - pytorch {{ pytorch }}=*cuda*  # [cpu_or_cuda=="cuda"]
+    - libtorch >=2.11.0,<=2.12.0a0=*cpu*openblas*  # [cpu_or_cuda=="cpu"]
+    - libtorch >=2.11.0,<=2.12.0a0=*cuda*  # [cpu_or_cuda=="cuda"]
+    - torchaudio ==2.11.0=*cpu*  # [cpu_or_cuda=="cpu"]
+    - torchaudio ==2.11.0=*cuda*  # [cpu_or_cuda=="cuda"]
+    - torchvision ==0.26=*cpu*  # [cpu_or_cuda=="cpu"]
+    - torchvision ==0.26=*cuda*  # [cpu_or_cuda=="cuda"]
     - torchcodec >=0.14.0
-
     # The intel-openmp version pin differs from the cpu.txt requirements file for these reasons:
     # * There have been some deprecations, in particular the Intel fortran compiler, but this does not appear to affect vLLM
     # * There is a possible API deprecation and/or removal of some of the functions, but vLLM does not appear to use them, as they
@@ -167,46 +156,40 @@ requirements:
     # * conda does not currently have a 2024.2.1 build (the version pinned in cpu.txt), and building one just for vLLM could have
     #   other repurcussions as the feedstock is multi-output and the additional outputs might not be things we want to support
     #   (in particular, MKL).
-    - intel-openmp ==2025.0.0 # [x86_64 and cpu_or_cuda=="cpu"]
-
-
+    - intel-openmp ==2025.0.0  # [x86_64 and cpu_or_cuda=="cpu"]
     # from cuda.txt
-    - __cuda   # [cpu_or_cuda == "cuda"]
-    - llvm-openmp # [ cpu_or_cuda=="cuda"]
+    - __cuda  # [cpu_or_cuda == "cuda"]
+    - llvm-openmp  # [ cpu_or_cuda=="cuda"]
     # pytorch is in cuda.txt and cpu.txt
-    
-
     # Note from Charles about ray: https://anaconda.slack.com/archives/C08940LAV4Y/p1775579243337879?thread_ts=1775484005.040459&cid=C08940LAV4Y
-    - ray-core # [cpu_or_cuda=="cuda"]
-    - ray-adag # [cpu_or_cuda=="cuda"]
-    - cupy # [cpu_or_cuda=="cuda"]
+    - ray-core  # [cpu_or_cuda=="cuda"]
+    - ray-adag  # [cpu_or_cuda=="cuda"]
+    - cupy  # [cpu_or_cuda=="cuda"]
     - xformers ==0.0.30  # [linux and cpu_or_cuda=="cuda"]
-  
+
 test:
   source_files:
     - tests/
   files:
-    - cpu-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cpu"]
-    - cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
-    - cuda-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cuda"]
+    - cpu-tests_linux-64.sh  # [(linux and x86_64) and cpu_or_cuda=="cpu"]
+    - cpu-tests_linux-aarch64.sh  # [(linux and aarch64) and cpu_or_cuda=="cpu"]
+    - cuda-tests_linux-64.sh  # [(linux and x86_64) and cpu_or_cuda=="cuda"]
   script_env:
     - VERBOSE=1
     - VLLM_TARGET_DEVICE={{ cpu_or_cuda }}
   imports:
     - vllm
     - pip
-
   commands:
     - pip list
     - pip check
     - vllm --help
-    - chmod +x cpu-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cpu"]
-    - ./cpu-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cpu"]
-    - chmod +x cuda-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cuda"]
-    - ./cuda-tests_linux-64.sh # [(linux and x86_64) and cpu_or_cuda=="cuda"]
-    - chmod +x cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
-    - ./cpu-tests_linux-aarch64.sh # [(linux and aarch64) and cpu_or_cuda=="cpu"]
-
+    - chmod +x cpu-tests_linux-64.sh  # [(linux and x86_64) and cpu_or_cuda=="cpu"]
+    - ./cpu-tests_linux-64.sh  # [(linux and x86_64) and cpu_or_cuda=="cpu"]
+    - chmod +x cuda-tests_linux-64.sh  # [(linux and x86_64) and cpu_or_cuda=="cuda"]
+    - ./cuda-tests_linux-64.sh  # [(linux and x86_64) and cpu_or_cuda=="cuda"]
+    - chmod +x cpu-tests_linux-aarch64.sh  # [(linux and aarch64) and cpu_or_cuda=="cpu"]
+    - ./cpu-tests_linux-aarch64.sh  # [(linux and aarch64) and cpu_or_cuda=="cpu"]
   requires:
     - pytest
     - pytest-asyncio
@@ -214,13 +197,13 @@ test:
     - tblib
     - accelerate
     - sentence-transformers
-    - {{ compiler('cxx') }}   # [linux] Required by torch.compile (inductor) at runtime
+    - {{ compiler('cxx') }}  # [linux] Required by torch.compile (inductor) at runtime
 
 about:
   home: https://vllm.ai/
   summary: A high-throughput and memory-efficient inference and serving engine for LLMs
   description: |
-    vLLM is a fast and easy-to-use library for LLM inference and serving. 
+    vLLM is a fast and easy-to-use library for LLM inference and serving.
   license: Apache-2.0
   license_file:
     - LICENSE
@@ -230,7 +213,7 @@ about:
   dev_url: https://github.com/vllm-project/vllm
 
 extra:
-    recipe-maintainers:
-      - ianaobi
-      - bkreider
-      - shermansiu
+  recipe-maintainers:
+    - ianaobi
+    - bkreider
+    - shermansiu

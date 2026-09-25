@@ -271,6 +271,7 @@ test:
     # 'av' needed for some tests. Version from requirements/tests/cuda.txt
     - av ==16.1.0 # [py>=311]
     - {{ compiler('cxx') }}   # [linux] Required by torch.compile (inductor) at runtime
+    - modelscope
 
 about:
   home: https://vllm.ai/

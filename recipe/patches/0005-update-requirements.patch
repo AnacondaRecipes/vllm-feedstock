@@ -1,7 +1,7 @@
-From 8473d22d87212be1a4a07308ce70ab4cd5cadf60 Mon Sep 17 00:00:00 2001
+From 283bc5ebc39b4d524bc0847f6bfa7f554c722c63 Mon Sep 17 00:00:00 2001
 From: Andrew Howe <ahowe@anaconda.com>
-Date: Mon, 20 Jul 2026 11:29:47 -0400
-Subject: [PATCH 5/5] update requirements
+Date: Thu, 10 Sep 2026 19:17:46 -0400
+Subject: [PATCH 5/6] update requirements
 
 Some of the requirements need to be updated to work in the conda environment.
  * remove intel-openmp python requirement. This will be handled
@@ -14,20 +14,26 @@ Some of the requirements need to be updated to work in the conda environment.
    main/pkgs
  * update torch package name. The PyPI and main/pkgs channel differ
    slightly on naming conventions.
+For CUDA builds:
+ * remove pynvvideocodec, flashinfer-python, flashinfer-cubin,
+   nvidia-cutlass-dsl, quack-kernels, tokenspeed-mla, and
+   humming-kernels. These are not strictly required, but there
+   are reduced capabilities when they are not present.
 ---
- requirements/cpu.txt | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ requirements/cpu.txt  |  6 +++---
+ requirements/cuda.txt | 20 +++++++++++++-------
+ 2 files changed, 16 insertions(+), 10 deletions(-)
 
 diff --git a/requirements/cpu.txt b/requirements/cpu.txt
-index 5ec338af7..e42227621 100644
+index c0b98d22c9..6329a11465 100644
 --- a/requirements/cpu.txt
 +++ b/requirements/cpu.txt
-@@ -2,12 +2,12 @@
+@@ -1,12 +1,12 @@
  # Common dependencies
  -r common.txt
  
 -setuptools==77.0.3 # this version can reuse CMake build dir
-+setuptools >=77.0.3,<81.0.0 # this version can reuse CMake build dir
++setuptools>=77.0.3,<81.0.0 # this version can reuse CMake build dir
  
  numba == 0.65.0; platform_machine != "s390x" # Required for N-gram speculative decoding
  
@@ -37,15 +43,58 @@ index 5ec338af7..e42227621 100644
  torch==2.11.0; platform_system == "Darwin" or platform_machine == "ppc64le" or platform_machine == "riscv64"
  
  # required for the image processor of minicpm-o-2_6, this must be updated alongside torch
-@@ -17,7 +17,7 @@ torchaudio; platform_machine != "s390x" and platform_machine != "riscv64"
- torchvision; platform_machine != "s390x"  and platform_machine != "riscv64"
+@@ -19,7 +19,7 @@ torchvision; platform_machine != "s390x"  and platform_machine != "riscv64"
+ torchcodec >= 0.14; platform_machine != "s390x" and platform_machine != "riscv64" and platform_machine != "ppc64le"
  
  # Intel Extension for PyTorch, only for x86_64 CPUs
 -intel-openmp==2024.2.1; platform_machine == "x86_64"
-+# intel-openmp dependency is managed through conda, not through python
++# intel-openmp dependency for this package is managed through conda environment, not pip
  
  # Use this to gather CPU info and optimize based on ARM Neoverse cores
  py-cpuinfo; platform_machine == "aarch64"
+diff --git a/requirements/cuda.txt b/requirements/cuda.txt
+index 3b8ff816f1..4c9391ed0c 100644
+--- a/requirements/cuda.txt
++++ b/requirements/cuda.txt
+@@ -9,13 +9,14 @@ torchaudio==2.11.0
+ # These must be updated alongside torch
+ torchvision==0.26.0 # Required for phi3v processor. See https://github.com/pytorch/vision?tab=readme-ov-file#installation for corresponding version
+ torchcodec >= 0.14
+-PyNvVideoCodec==2.0.4
++#PyNvVideoCodec==2.0.4
+ # FlashInfer should be updated together with the Dockerfile
+ # flashinfer-cubin is not on PyPI since 0.6.14; setup.py excludes it from
+ # install_requires so the published wheel does not carry an unresolvable pin
+ --extra-index-url https://flashinfer.ai/whl/
+-flashinfer-python==0.6.14
+-flashinfer-cubin==0.6.14
++# flashinfer is not strictly required, though there are reduce capabilities when it isn't available.
++# flashinfer-python==0.6.14
++# flashinfer-cubin==0.6.14
+ apache-tvm-ffi==0.1.10
+ tilelang==0.1.9
+ nvidia-cudnn-frontend>=1.19.1
+@@ -25,11 +26,16 @@ nvtx==0.2.15
+ fastsafetensors >= 0.3.2
+ 
+ # QuACK and Cutlass DSL for FA4 (cute-DSL implementation)
+-nvidia-cutlass-dsl[cu13]==4.6.0
+-quack-kernels>=0.4.0  # Required for tml-fa4
++# These are not strictly require, though FlashAttention4 support is not available
++# when they aren't present.
++#nvidia-cutlass-dsl[cu13]==4.6.0
++#quack-kernels>=0.4.0  # Required for tml-fa4
+ 
+ # Tokenspeed_MLA for faster mla with spec decode
+-tokenspeed-mla==0.1.8; platform_system == "Linux"
++# Tokenspeed-mla is not needed for every use case. It is an optimization
++# for MLA workloads, which already have fallbacks.
++# tokenspeed-mla==0.1.8; platform_system == "Linux"
+ 
+ # Humming kernels for quantization gemm
+-humming-kernels[cu13]==0.1.10
++# Not strictly required, but reduced capabilities when not present
++# humming-kernels[cu13]==0.1.10
 -- 
 2.51.0
 

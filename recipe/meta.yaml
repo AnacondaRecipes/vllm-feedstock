@@ -20,6 +20,7 @@ source:
       - patches/0004-Allow-skipping-ACL-via-VLLM_SKIP_ACL-env-var.patch
       - patches/0005-update-requirements.patch
       - patches/0006-Use-PREFIX-for-CUDA-include-paths-in-DeepGEMM-build.patch
+      - patches/0007-Guard-against-missing-flashinfer.patch
   - url: https://github.com/vllm-project/flash-attention/archive/caaa4eb59845388a20b1f435ecaafb4bd9517ad8.tar.gz
     sha256: bc680ffb076b7f0ea3ff851772622acea950e69f3731f9f5fdeb8887f7dabf2c
     folder: flash-attention
@@ -275,7 +276,9 @@ about:
   summary: A high-throughput and memory-efficient inference and serving engine for LLMs
   description: |
     vLLM is a fast and easy-to-use library for LLM inference and serving. 
-  license: Apache-2.0
+  # This package vendors several projects that result in the following license string
+  # and license_family.
+  license: Apache-2.0 AND BSD-3-Clause AND MIT
   license_file:
     - LICENSE
     - flash-attention/LICENSE
@@ -284,7 +287,7 @@ about:
     - .deps/flashmla-src/LICENSE
     - .deps/qutlass-src/LICENSE
     - .deps/triton_kernels-src/LICENSE
-  license_family: Apache
+  license_family: Other
   doc_url: https://docs.vllm.ai/en/latest/usage/
   dev_url: https://github.com/vllm-project/vllm
 

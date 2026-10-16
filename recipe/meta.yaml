@@ -67,8 +67,6 @@ requirements:
     - wheel
     - jinja2 >=3.1.6
     - pip
-    # Ensures libnuma.so is available for linking
-    - libnuma =2.0.19 # [linux]
     - sleef {{ sleef }}
     - libtorch ={{ libtorch }}=*cpu*openblas* # [gpu_variant=="cpu"]
     - libtorch ={{ libtorch }}=*cuda* # [gpu_variant=="cuda"]

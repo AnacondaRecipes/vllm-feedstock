@@ -28,6 +28,12 @@ source:
   - url: https://github.com/NVIDIA/cutlass/archive/62750a2b75c802660e4894434dc55e839f322277.tar.gz
     sha256: 78816d6c6d97793b5b59ef2a702174cb85b78dfcefc8fe2489964de2e42f17d2
     folder: flash-attention/csrc/cutlass
+  # vLLM's CMakeLists.txt (CUTLASS_REVISION) pins v4.4.2. It needs the full source tree
+  # (python/ for Machete generation, examples/ for CUTLASS MLA), so the conda cutlass
+  # package can't be used.
+  - url: https://github.com/NVIDIA/cutlass/archive/refs/tags/v4.4.2.tar.gz
+    sha256: ef62816841b8cbcd0ed3ec45d3ab56cf67d569a0f39329b43eeeebea86f58473
+    folder: cutlass-src
 
 build:
   # does not support windows, and only supports CUDA on x86-64
@@ -84,15 +90,16 @@ requirements:
     - libcusolver-dev                              # [gpu_variant == "cuda"]
     - libcusparse-dev                              # [gpu_variant == "cuda"]
 
-    # Not specified in the requirements files, but necessary for the build
-    # Reference to a specific version here: https://github.com/vllm-project/vllm/blob/v0.26.0/CMakeLists.txt#L439
-    # This is the version that vllm uses when vendoring cutlass as part of the build.
-    - cutlass ==4.4.2 
-
     # The vendored deepgemm needs pybind11 headers to build.
     # version selected to match python-abi version needed as a transitive
     # runtime dependency.
     - pybind11 =2.13   # [gpu_variant=="cuda"]
+
+    # for sys_mem_monitor.py:
+    - psutil
+    - pyyaml
+    - matplotlib
+    - pandas
 
   run:
 
@@ -285,6 +292,7 @@ about:
     - .deps/flashmla-src/LICENSE
     - .deps/qutlass-src/LICENSE
     - .deps/triton_kernels-src/LICENSE
+    - cutlass-src/LICENSE.txt
   license_family: Other
   doc_url: https://docs.vllm.ai/en/latest/usage/
   dev_url: https://github.com/vllm-project/vllm

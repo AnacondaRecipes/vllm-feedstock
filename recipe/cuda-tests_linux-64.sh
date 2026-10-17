@@ -44,11 +44,11 @@ skip_models=(
 
 expanded_skip_models=${skip_models[@]}
 
-VLLM_USE_FLASHINFER_SAMPLER=0 pytest -v -s tests/entrypoints/llm/test_generate.py
-VLLM_USE_FLASHINFER_SAMPLER=0 pytest -v -s tests/entrypoints/llm/test_gpu_utilization.py
-VLLM_USE_FLASHINFER_SAMPLER=0 pytest -v -s tests/test_regression.py
-VLLM_USE_FLASHINFER_SAMPLER=0 pytest -v -s tests/v1/e2e/general/test_min_tokens.py
-VLLM_USE_FLASHINFER_SAMPLER=0 pytest -v -s tests/v1/e2e/general/test_context_length.py
+pytest -v -s tests/entrypoints/llm/test_generate.py
+pytest -v -s tests/entrypoints/llm/test_gpu_utilization.py
+pytest -v -s tests/test_regression.py
+pytest -v -s tests/v1/e2e/general/test_min_tokens.py
+pytest -v -s tests/v1/e2e/general/test_context_length.py
 
 time pytest -v -s tests/lora/test_peft_helper.py -k "not ($expanded_skip_models)"
 hf cache list

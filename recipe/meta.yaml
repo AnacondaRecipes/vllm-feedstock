@@ -186,6 +186,7 @@ requirements:
     #   other repurcussions as the feedstock is multi-output and the additional outputs might not be things we want to support
     #   (in particular, MKL).
     - intel-openmp ==2025.0.0 # [x86_64 and gpu_variant=="cpu"]
+    - py-libnuma {{ libnuma }} # [linux and cpu_or_cuda=="cpu"]
 
 
     # from cuda.txt
@@ -236,6 +237,19 @@ requirements:
     - flashinfer-cubin ==0.6.14  # [gpu_variant=="cuda"]
     - nvidia-cutlass-dsl ==4.6.0 # [gpu_variant=="cuda"]
     - quack-kernels  >=0.4.0     # [gpu_variant=="cuda"]
+
+    # Additional run_constrained from setup.py 
+    - tensorizer ==2.10.1
+    - fastsafetensors >=0.3.2
+    - instanttensor >=0.1.9
+    - runai-model-streamer >=0.15.7
+    - smg-grpc-servicer >=0.5.2
+    - vllm-gguf-plugin >=0.0.2
+
+    - opentelemetry-sdk >=1.26.0
+    - opentelemetry-api >=1.26.0
+    - opentelemetry-exporter-otlp >=1.26.0
+    - opentelemetry-semantic-conventions-ai >=0.4.1
 
 
 

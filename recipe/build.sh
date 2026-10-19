@@ -15,6 +15,15 @@ if [[ "${gpu_variant}" == "cuda" ]]; then
 
     export VLLM_CUTLASS_SRC_DIR=$SRC_DIR/cutlass-src
 
+    # Use the sources staged in meta.yaml instead of letting cmake git-clone them
+    export DEEPGEMM_SRC_DIR=$SRC_DIR/deepgemm-src
+    export FLASH_MLA_SRC_DIR=$SRC_DIR/flashmla-src
+    export QUTLASS_SRC_DIR=$SRC_DIR/qutlass-src
+    export FMHA_SM100_SRC_DIR=$SRC_DIR/msa-src
+    export TML_FA4_SRC_DIR=$SRC_DIR/tml-fa4-src
+    # Must point at the triton_kernels python package directory itself
+    export TRITON_KERNELS_SRC_DIR=$SRC_DIR/triton-src/python/triton_kernels/triton_kernels
+
     # arch list is from pytorch feedstock: https://github.com/AnacondaRecipes/pytorch-feedstock/blob/8da9b2d5acf0735e7c2082819aca7eeae3094c62/recipe/build.sh#L239
     if [[ "$target_platform" == "linux-aarch64" && "${cuda_compiler_version}" == 13.* ]]; then
         export TORCH_CUDA_ARCH_LIST="8.0;9.0;10.0;11.0;12.0;12.1+PTX"

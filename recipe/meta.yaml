@@ -35,6 +35,57 @@ source:
     sha256: ef62816841b8cbcd0ed3ec45d3ab56cf67d569a0f39329b43eeeebea86f58473
     folder: cutlass-src
 
+  # Sources below are normally git-fetched by vLLM's cmake/external_projects/*.cmake
+  # at build time. They are staged here as checksummed sources and handed to cmake
+  # through the *_SRC_DIR environment variables set in build.sh.
+  # Revisions match vllm v{{ version }}; re-check on every version bump.
+  # GitHub tarballs omit git submodules, so those are staged separately at the
+  # commit each parent repo pins.
+
+  # cmake/external_projects/deepgemm.cmake
+  - url: https://github.com/deepseek-ai/DeepGEMM/archive/a6b593d2826719dcf4892609af7b84ee23aaf32a.tar.gz
+    sha256: 83e20dddd89d88fe0b9a1d707b366bac6faef1cb564c2cbee13b9da85e7b23b7
+    folder: deepgemm-src
+  - url: https://github.com/NVIDIA/cutlass/archive/f3fde58372d33e9a5650ba7b80fc48b3b49d40c8.tar.gz
+    sha256: 2e5890306557bd87136e1d6914e4ee42536050b9116433848175520fd15991f2
+    folder: deepgemm-src/third-party/cutlass
+  - url: https://github.com/fmtlib/fmt/archive/553ec11ec06fbe0beebfbb45f9dc3c9eabd83d28.tar.gz
+    sha256: c314292789d28c3c3b420e75a7b2d1706f685f7fb63289128d46aeaea2c6be71
+    folder: deepgemm-src/third-party/fmt
+
+  # cmake/external_projects/flashmla.cmake
+  - url: https://github.com/vllm-project/FlashMLA/archive/a8f794d1251cbfd88a5011445dd5582289c727e4.tar.gz
+    sha256: 36b9409fabb373f13d5b5b841125e71f5e11875283e752c43df5ee47f5def96b
+    folder: flashmla-src
+  - url: https://github.com/NVIDIA/cutlass/archive/147f5673d0c1c3dcf66f78d677fd647e4a020219.tar.gz
+    sha256: 9f6c53320a85b4a570975e557918cde65168cd311f081920446c238437347dc6
+    folder: flashmla-src/csrc/cutlass
+
+  # cmake/external_projects/qutlass.cmake
+  # Its own cutlass submodule is not staged: vLLM passes CUTLASS_INCLUDE_DIR (from
+  # cutlass-src above), and qutlass only falls back to the submodule without it.
+  - url: https://github.com/IST-DASLab/qutlass/archive/830d2c4537c7396e14a02a46fbddd18b5d107c65.tar.gz
+    sha256: 6b431aa10fbc6b288564c820658aed685641678903e128e7b0a958b8757b5d0c
+    folder: qutlass-src
+
+  # cmake/external_projects/fmha_sm100.cmake (vllm-project/MSA)
+  - url: https://github.com/vllm-project/MSA/archive/2e63ec37a0fc29bc20f39cd1a52e0f5affc33a73.tar.gz
+    sha256: 3b72b39e0291c655d80d37a152dcaa46b86b35ec3a11118fcd418c601106b5d4
+    folder: msa-src
+  - url: https://github.com/NVIDIA/cutlass/archive/eb61c911471867a5fd2466bfd8f29306cea6ebf8.tar.gz
+    sha256: ffe392246cc3517017c4b91d14bbcb28aae28d26d1847b333371eb13bfec52eb
+    folder: msa-src/python/fmha_sm100/cutlass
+
+  # cmake/external_projects/tml_fa4.cmake
+  - url: https://github.com/vllm-project/tml-fa4/archive/b206834606ed5b5f21f8eed6b0683f528ea9cf7d.tar.gz
+    sha256: 7f42421e89a030e10c5a336dcfc405e16565a106698da855ddbcfa86dd0e602e
+    folder: tml-fa4-src
+
+  # cmake/external_projects/triton_kernels.cmake (DEFAULT_TRITON_KERNELS_TAG)
+  - url: https://github.com/triton-lang/triton/archive/refs/tags/v3.5.1.tar.gz
+    sha256: 03d7c41f6f2dc1dfa3445776c4a893dc34b1e0ece42b953f036c071ff6409b80
+    folder: triton-src
+
 build:
   # does not support windows, and only supports CUDA on x86-64
   # Does not currently support osx due to xgrammar dependency.
@@ -302,11 +353,18 @@ about:
     - LICENSE
     - flash-attention/LICENSE
     - flash-attention/csrc/cutlass/LICENSE.txt
-    - .deps/deepgemm-src/LICENSE
-    - .deps/flashmla-src/LICENSE
-    - .deps/qutlass-src/LICENSE
-    - .deps/triton_kernels-src/LICENSE
     - cutlass-src/LICENSE.txt
+    - deepgemm-src/LICENSE
+    - deepgemm-src/third-party/cutlass/LICENSE.txt
+    - deepgemm-src/third-party/fmt/LICENSE
+    - flashmla-src/LICENSE
+    - flashmla-src/csrc/cutlass/LICENSE.txt
+    - qutlass-src/LICENSE
+    - msa-src/LICENSE
+    - msa-src/NOTICE
+    - msa-src/python/fmha_sm100/cutlass/LICENSE.txt
+    - tml-fa4-src/LICENSE
+    - triton-src/LICENSE
   license_family: Other
   doc_url: https://docs.vllm.ai/en/latest/usage/
   dev_url: https://github.com/vllm-project/vllm

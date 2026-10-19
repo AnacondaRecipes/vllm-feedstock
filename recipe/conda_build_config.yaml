@@ -4,7 +4,7 @@ cpu_or_cuda:
 
 
 pytorch:
-  - 2.11
+  - 2.13
 
 libtorch:
-  - 2.11
+  - 2.13

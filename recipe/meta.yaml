@@ -1,5 +1,5 @@
 {% set name = "vllm" %}
-{% set version = "0.26.0" %}
+{% set version = "0.32.0" %}
 {% set build_num = 0 %}
 
 {% if cpu_or_cuda =="cuda" %}
@@ -12,23 +12,23 @@ package:
 
 source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
-    sha256: 23e9fa19d7e20ce7dcc1c074d41503e2116d23f19e688f5d5ea91b741f958502
+    sha256: d2c957d5eee3d0985012151315ddc62cbe0cd368fc96a5fc3510438d9dddf2ad
     patches:
       - patches/0001-Search-for-the-CUDA-package-in-CMakeLists.patch
       - patches/0002-Remove-ninja-pip-requirement.patch
       - patches/0003-Manually-define-gettid.patch
       - patches/0004-Allow-skipping-ACL-via-VLLM_SKIP_ACL-env-var.patch
       - patches/0005-update-requirements.patch
-  - url: https://github.com/vllm-project/flash-attention/archive/caaa4eb59845388a20b1f435ecaafb4bd9517ad8.tar.gz
-    sha256: bc680ffb076b7f0ea3ff851772622acea950e69f3731f9f5fdeb8887f7dabf2c
+  - url: https://github.com/vllm-project/flash-attention/archive/9cd61de38763d712bb6ce56e2a02cc2bf718c89f.tar.gz
+    sha256: b0dcc13a7e4d5ed4bf69f092d7eb50c1b80de76a4e33315a722c893f9488ab9d
     folder: flash-attention
 
 build:
   # does not support windows, and only supports CUDA on x86-64
   # Does not currently support osx due to xgrammar dependency.
-  # Skip python 3.10 for CUDA builds due to a segfault caused by some of the dependencies
+  # vLLM 0.32.0 requires python >=3.11,<3.15 (pyproject.toml requires-python)
   # On CPU builds, skip CUDA 12 builds
-  skip: true  # [py<310 or py>314 or ((osx or aarch64) and cpu_or_cuda=="cuda") or win or osx or (cpu_or_cuda=="cuda" and py==310) or (cpu_or_cuda=="cpu" and (cuda_compiler_version or "12").startswith("12"))]
+  skip: true  # [py<311 or py>314 or ((osx or aarch64) and cpu_or_cuda=="cuda") or win or osx or (cpu_or_cuda=="cpu" and (cuda_compiler_version or "12").startswith("12"))]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cpu_or_cuda == "cpu"]
@@ -53,7 +53,7 @@ requirements:
   host:
     - python
     - packaging >=24.2
-    - setuptools >=77.0.3,<81.0.0
+    - setuptools >=78.1.1,<81.0.0
     - setuptools-scm >=8
     - setuptools-rust >=1.9.0
     - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
@@ -92,39 +92,40 @@ requirements:
     - psutil
     - sentencepiece
     - numpy
-    - requests >=2.26.0
+    - requests >=2.33.0
     - tqdm
     - blake3
     - py-cpuinfo
-    - transformers >=5.5.3
+    - transformers >=5.16.1,<5.20.0
+    - huggingface_hub >=1.31.0
     - safetensors >=0.6.2
-    - tokenizers >=0.21.1
-    - protobuf >=6.33.5
+    - tokenizers >=0.23.2
+    - protobuf >=6.33.5  # upstream: >=5.29.6 excluding 6.30-6.33.4
     - fastapi >=0.133.0,<0.137.0
     - starlette >=1.0.1
-    - aiohttp >=3.13.3
-    - openai >=2.0.0
+    - aiohttp >=3.14.3
+    - openai >=2.25.0
     - pydantic >=2.12.0
     - prometheus_client >=0.18.0
-    - pillow
+    - pillow >=12.3.0
     - prometheus-fastapi-instrumentator >=8.0.0
     - tiktoken >=0.6.0
     - lm-format-enforcer ==0.11.3
     - llguidance >=1.7.0,<1.8.0
     - outlines-core ==0.2.14
     - lark ==1.2.2
-    - xgrammar >=0.2.1,<1.0.0
+    - xgrammar ==0.2.8
     - jsonschema >=4.23.0
     - typing_extensions >=4.10
-    - filelock >=3.16.1 # need to contain https://github.com/tox-dev/filelock/pull/317
+    - filelock >=3.20.3 # need to contain https://github.com/tox-dev/filelock/pull/317
     - partial-json-parser
     - pyzmq >=25.0.0
     - msgspec
-    - mistral-common >=1.11.5
+    - mistral-common >=1.11.6
     - opencv >=4.13.0=*headless*  # required for video IO
     - pyyaml
     - six >=1.16.0  # [py>311]
-    - setuptools >=77.0.3,<81.0.0 # [py>311 or cpu_or_cuda=="cpu"]
+    - setuptools >=78.1.1,<81.0.0 # [py>311 or cpu_or_cuda=="cpu"]
     - einops 
     - compressed-tensors ==0.17.0
     - depyf ==0.20.0 # required for profiling and debugging with compilation config
@@ -137,10 +138,12 @@ requirements:
     - cbor2
     - ijson
     - setproctitle
-    - openai-harmony >=0.0.3
+    # 0.32.0 switched from openai-harmony to its fork oss-harmony (same `openai_harmony`
+    # module, embedded vocabularies). The two conflict and must not be co-installed.
+    - oss-harmony >=0.0.11
     - anthropic >=0.71.0
     - model-hosting-container-standards >=0.1.14,<1.0.0
-    - mcp
+    - mcp >=2.0.0,<3.0.0
     - opentelemetry-sdk >=1.27.0
     - opentelemetry-api >=1.27.0
     - opentelemetry-exporter-otlp >=1.27.0
@@ -151,13 +154,13 @@ requirements:
     - packaging >=24.2
     - pytorch {{ pytorch }}=*cpu* # [cpu_or_cuda=="cpu"]
     - pytorch {{ pytorch }}=*cuda* # [cpu_or_cuda=="cuda"]
-    - libtorch >=2.11.0,<=2.12.0a0=*cpu*openblas* # [cpu_or_cuda=="cpu"]
-    - libtorch >=2.11.0,<=2.12.0a0=*cuda* # [cpu_or_cuda=="cuda"]
+    - libtorch >=2.13.0,<2.14.0a0=*cpu*openblas* # [cpu_or_cuda=="cpu"]
+    - libtorch >=2.13.0,<2.14.0a0=*cuda* # [cpu_or_cuda=="cuda"]
 
     - torchaudio ==2.11.0=*cpu* # [cpu_or_cuda=="cpu"]
     - torchaudio ==2.11.0=*cuda* # [cpu_or_cuda=="cuda"]
-    - torchvision ==0.26=*cpu* # [cpu_or_cuda=="cpu"]
-    - torchvision ==0.26=*cuda* # [cpu_or_cuda=="cuda"]
+    - torchvision ==0.28=*cpu* # [cpu_or_cuda=="cpu"]
+    - torchvision ==0.28=*cuda* # [cpu_or_cuda=="cuda"]
     - torchcodec >=0.14.0
 
     # The intel-openmp version pin differs from the cpu.txt requirements file for these reasons:
@@ -181,6 +184,9 @@ requirements:
     - ray-adag # [cpu_or_cuda=="cuda"]
     - cupy # [cpu_or_cuda=="cuda"]
     - xformers ==0.0.30  # [linux and cpu_or_cuda=="cuda"]
+
+  run_constrained:
+    - openai-harmony <0.0.0a0  # conflicts with oss-harmony (overwrites openai_harmony files)
   
 test:
   source_files:

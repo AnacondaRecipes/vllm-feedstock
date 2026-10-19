@@ -102,6 +102,7 @@ hf cache list
 time pytest -v -s tests/kernels/quantization/test_fp8_quant.py tests/kernels/quantization/test_awq_triton.py -k "not ($expanded_skip_models or test_scaled_mm or test_w8a8_fp8_fused_moe or test_w8a8_block_int8_matmul or test_fp8_quant_large or test_moe)" --ignore tests/kernels/quantization/test_marlin_gemm.py
 hf cache list
 
+# test_cohere_command_reasoning_parser.py is excluded because it requires cohere_melody, which is not available
 time pytest -v -s tests/reasoning/ -k "not ($expanded_skip_models)" --ignore tests/reasoning/test_cohere_command_reasoning_parser.py
 hf cache list
 

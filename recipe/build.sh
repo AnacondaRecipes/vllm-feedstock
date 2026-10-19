@@ -41,5 +41,5 @@ if [[ "${gpu_variant}" == "cuda" ]]; then
 fi
 
 # Proceed with installation
-$PYTHON $RECIPE_DIR/sys_mem_monitor.py --filename ~/build_resources.yaml -- $PYTHON -m pip install . -vv --no-deps --no-build-isolation
+$PYTHON -m pip install . -vv --no-deps --no-build-isolation
 

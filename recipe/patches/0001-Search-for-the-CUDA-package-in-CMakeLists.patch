@@ -1,17 +1,17 @@
-From 479d2e83e9b0a69ba1ce03c12742d37f7ee74cd8 Mon Sep 17 00:00:00 2001
+From 81df5eb1f43aa47a7848dccaaddbc63c9d71cec0 Mon Sep 17 00:00:00 2001
 From: Sherman Siu <s8siu@uwaterloo.ca>
 Date: Mon, 21 Jul 2025 05:01:32 -0400
-Subject: [PATCH 1/5] Search for the CUDA package in CMakeLists
+Subject: [PATCH 1/6] Search for the CUDA package in CMakeLists
 
 ---
  CMakeLists.txt | 1 +
  1 file changed, 1 insertion(+)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 38af64851..4d11e1ff1 100644
+index f514ba41aa..d1de010d02 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -81,6 +81,7 @@ endif()
+@@ -98,6 +98,7 @@ endif()
  append_cmake_prefix_path("torch" "torch.utils.cmake_prefix_path")
  
  # Ensure the 'nvcc' command is in the PATH

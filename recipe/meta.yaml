@@ -124,6 +124,8 @@ requirements:
     - wheel
     - jinja2 >=3.1.6
     - pip
+    # Ensures libnuma.so is available for linking
+    - libnuma {{ libnuma }} # [linux and gpu_variant=="cpu"]
     - sleef {{ sleef }}
     - libtorch ={{ libtorch }}=*cpu*openblas* # [gpu_variant=="cpu"]
     - libtorch ={{ libtorch }}=*cuda* # [gpu_variant=="cuda"]
@@ -237,8 +239,6 @@ requirements:
     #   other repurcussions as the feedstock is multi-output and the additional outputs might not be things we want to support
     #   (in particular, MKL).
     - intel-openmp ==2025.0.0 # [x86_64 and gpu_variant=="cpu"]
-    - py-libnuma {{ libnuma }} # [linux and cpu_or_cuda=="cpu"]
-
 
     # from cuda.txt
     - __cuda   # [gpu_variant == "cuda"]
@@ -296,6 +296,13 @@ requirements:
     - runai-model-streamer >=0.15.7
     - smg-grpc-servicer >=0.5.2
     - vllm-gguf-plugin >=0.0.2
+
+    # We don't currently have this package on main, but it is listed as an extra dependency in setup.py
+    # If we ever add the package to main, it will probably have a different package name due to
+    # the '-cu13' suffix. However, the -cu13 suffix listed here means that it will probably not have a name
+    # conflict with anything on main, and not cause any problems. All that this likely gives us is 
+    # a documented note that we see that this constraint might exist in the future. 
+    - nvidia-deepstream-videodecode-cu13 >=9.0.2 # [linux and x86_64 and gpu_variant=="cuda"]
 
     - opentelemetry-sdk >=1.26.0
     - opentelemetry-api >=1.26.0

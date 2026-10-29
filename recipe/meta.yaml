@@ -12,14 +12,16 @@ package:
 
 source:
   - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/vllm-{{ version }}.tar.gz
-    sha256: 23e9fa19d7e20ce7dcc1c074d41503e2116d23f19e688f5d5ea91b741f958502
+    sha256: d2c957d5eee3d0985012151315ddc62cbe0cd368fc96a5fc3510438d9dddf2ad
     patches:
       - patches/0001-Search-for-the-CUDA-package-in-CMakeLists.patch
       - patches/0002-Remove-ninja-pip-requirement.patch
       - patches/0003-Manually-define-gettid.patch
       - patches/0004-Allow-skipping-ACL-via-VLLM_SKIP_ACL-env-var.patch
       - patches/0005-Guard-against-missing-flashinfer.patch
-      - patches/0006-updating-requirements.patch
+      - patches/0006-Relax-mcp-requirement-to-allow-mcp-1.x.patch
+      - patches/0007-Import-mcp-ClientSession-from-the-top-level-mcp-pack.patch
+      - patches/0008-updating-requirements.patch
       #- patches/0006-Use-PREFIX-for-CUDA-include-paths-in-DeepGEMM-build.patch
       
   - url: https://github.com/vllm-project/flash-attention/archive/caaa4eb59845388a20b1f435ecaafb4bd9517ad8.tar.gz
@@ -33,7 +35,7 @@ source:
   # (python/ for Machete generation, examples/ for CUTLASS MLA), so the conda cutlass
   # package can't be used.
   - url: https://github.com/NVIDIA/cutlass/archive/refs/tags/v4.7.1.tar.gz
-    sha256: ef62816841b8cbcd0ed3ec45d3ab56cf67d569a0f39329b43eeeebea86f58473
+    sha256: 8290eb914cd5aaf4c665ee4108ba5bd65383cfee1296286a42a7ef711554d365
     folder: cutlass-src
 
   # Sources below are normally git-fetched by vLLM's cmake/external_projects/*.cmake
@@ -45,7 +47,7 @@ source:
 
   # cmake/external_projects/deepgemm.cmake
   - url: https://github.com/vllm-project/DeepGEMM/archive/727f847082d2e7946f70dc02b94949db206310d3.tar.gz
-    sha256: 83e20dddd89d88fe0b9a1d707b366bac6faef1cb564c2cbee13b9da85e7b23b7
+    sha256: d629535cea3ad1297a380de76f0f39d0d405409d97f8f71e016e137462f2fcc8
     folder: deepgemm-src
   - url: https://github.com/NVIDIA/cutlass/archive/f3fde58372d33e9a5650ba7b80fc48b3b49d40c8.tar.gz
     sha256: 2e5890306557bd87136e1d6914e4ee42536050b9116433848175520fd15991f2
@@ -53,7 +55,7 @@ source:
   # FIXME: Double check that deep_jit is necessary. It was vendored in for v0.26.0, but looks
   #        like it might be for the vllm v0.32.0 updates.
   - url: https://github.com/deepseek-ai/DeepJIT/archive/3732a3b9a0a2e5126396908a362ba5abdf043b2f.tar.gz
-    sha256: 2e5890306557bd87136e1d6914e4ee42536050b9116433848175520fd15991f2
+    sha256: 436ebe903967adbebd6f60697b3ac36b991727d667c845cd83376f62138fe41e
     folder: deepgemm-src/third-party/deep_jit
   # - url: https://github.com/fmtlib/fmt/archive/553ec11ec06fbe0beebfbb45f9dc3c9eabd83d28.tar.gz
   #   sha256: c314292789d28c3c3b420e75a7b2d1706f685f7fb63289128d46aeaea2c6be71
@@ -61,22 +63,22 @@ source:
 
   # cmake/external_projects/flashmla.cmake
   - url: https://github.com/vllm-project/FlashMLA/archive/e2afa5fd8c220fbd05fe03fc24c9d5e64c24641b.tar.gz
-    sha256: 36b9409fabb373f13d5b5b841125e71f5e11875283e752c43df5ee47f5def96b
+    sha256: 4577d85f4938bde55aebca43a5f090eaa67873b57672bbdcaebc6ed17e34bc2e
     folder: flashmla-src
   - url: https://github.com/NVIDIA/cutlass/archive/4faf1a1568cf1e4ad8ff71846a13e16f2a6a6f6b.tar.gz
-    sha256: 9f6c53320a85b4a570975e557918cde65168cd311f081920446c238437347dc6
+    sha256: 50a017597cb76ab5dfe15a2419dd445010aef731b5ff9354e8da6543de204b23
     folder: flashmla-src/csrc/cutlass
 
   # cmake/external_projects/qutlass.cmake
   # Its own cutlass submodule is not staged: vLLM passes CUTLASS_INCLUDE_DIR (from
   # cutlass-src above), and qutlass only falls back to the submodule without it.
   - url: https://github.com/IST-DASLab/qutlass/archive/e74319e3405ce6d71965732880f5dc1f52371f64.tar.gz
-    sha256: 6b431aa10fbc6b288564c820658aed685641678903e128e7b0a958b8757b5d0c
+    sha256: 39dda9c3626e024f00cd0afbe54971edce79fa12f0842d79022c8e23303faea3
     folder: qutlass-src
 
   # cmake/external_projects/fmha_sm100.cmake (vllm-project/MSA)
   - url: https://github.com/vllm-project/MSA/archive/968061ab16cb14991a5c7d4c0e8eabf531be0dcf.tar.gz
-    sha256: 3b72b39e0291c655d80d37a152dcaa46b86b35ec3a11118fcd418c601106b5d4
+    sha256: 13bd3949621aece2ed49aa59028190ef15fa989ecaac641e148ed5574796dc21
     folder: msa-src
   - url: https://github.com/NVIDIA/cutlass/archive/eb61c911471867a5fd2466bfd8f29306cea6ebf8.tar.gz
     sha256: ffe392246cc3517017c4b91d14bbcb28aae28d26d1847b333371eb13bfec52eb
@@ -84,7 +86,7 @@ source:
 
   # cmake/external_projects/tml_fa4.cmake
   - url: https://github.com/vllm-project/tml-fa4/archive/75765e76a9c2c012c1f6ecd64577eb646eb4d303.tar.gz
-    sha256: 7f42421e89a030e10c5a336dcfc405e16565a106698da855ddbcfa86dd0e602e
+    sha256: efa621ccf26407e686e5bac07476350aa1f2f3aaa175a4975b97455aeba6ffca
     folder: tml-fa4-src
 
   # cmake/external_projects/triton_kernels.cmake (DEFAULT_TRITON_KERNELS_TAG)
@@ -141,7 +143,7 @@ requirements:
     - libtorch ={{ libtorch }}=*cuda* # [gpu_variant=="cuda"]
     - regex
     # CUDA development headers and libraries (linking only; runtime comes via pytorch).
-    - cuda-version =={{ cuda_compiler_version }}   # [gpu_variant == "cuda"]
+    - cuda-version {{ cuda_compiler_version }}   # [gpu_variant == "cuda"]
     - cuda-driver-dev                              # [gpu_variant == "cuda"]
     - cuda-cudart-dev                              # [gpu_variant == "cuda"]
     - cuda-nvrtc-dev                               # [gpu_variant == "cuda"]
@@ -156,7 +158,9 @@ requirements:
     # The vendored deepgemm needs pybind11 headers to build.
     # version selected to match python-abi version needed as a transitive
     # runtime dependency.
-    - pybind11 =2.13   # [gpu_variant=="cuda"]
+    # NOTE 10/28/2026 it looks like pybind might have been removed from this build of deep gemm.
+    #                 Verify this before releasing.
+    #- pybind11 =2.13   # [gpu_variant=="cuda"]
 
     # for sys_mem_monitor.py:
     - psutil
@@ -177,8 +181,8 @@ requirements:
     - tqdm
     - blake3
     - py-cpuinfo
-    - transformers >=5.16.1
-    - huggingface_hub >= 1.31.0
+    - transformers >=5.16.1,<5.20.0
+    - huggingface_hub >=1.31.0
     - tokenizers >=0.23.2
     - safetensors >=0.6.2
     # upstream requirement is protobuf >=5.29.6, witch a bunch of specific versions excluded, all of
@@ -223,7 +227,7 @@ requirements:
     - oss-harmony >=0.0.11
     - anthropic >=0.71.0
     - model-hosting-container-standards >=0.1.14,<1.0.0
-    - mcp >=2.0.0,<3.0.0
+    - mcp >=1.9.4,<3.0.0
     - opentelemetry-sdk >=1.27.0
     - opentelemetry-api >=1.27.0
     - opentelemetry-exporter-otlp >=1.27.0
@@ -234,8 +238,8 @@ requirements:
     - packaging >=24.2
     - pytorch {{ pytorch }}=*cpu* # [gpu_variant=="cpu"]
     - pytorch {{ pytorch }}=*cuda* # [gpu_variant=="cuda"]
-    - libtorch >=2.11.0,<=2.12.0a0=*cpu*openblas* # [gpu_variant=="cpu"]
-    - libtorch >=2.11.0,<=2.12.0a0=*cuda* # [gpu_variant=="cuda"]
+    - libtorch {{ libtorch }}=*cpu*openblas* # [gpu_variant=="cpu"]
+    - libtorch {{ libtorch }}=*cuda* # [gpu_variant=="cuda"]
 
     - torchaudio ==2.11.0=*cpu* # [gpu_variant=="cpu"]
     - torchaudio ==2.11.0=*cuda* # [gpu_variant=="cuda"]
@@ -273,11 +277,11 @@ requirements:
 
     # Tokenspeed-mla is not needed for every use case. It is an optimization
     # for MLA workloads, which already have fallbacks.
-    #- tokenspeed-mla ==0.1.8 # [gpu_variant=="cuda"]
+    #- tokenspeed-mla ==0.2.15 # [gpu_variant=="cuda"]
     # Humming kernels is not strictly required for vLLM, despite being in the cuda.txt
     # requirements. vLLM will work without it, and there are checks to make sure the
     # library is present before using the features that require it.
-    #- humming-kernels[cu13] ==0.1.10 # [gpu_variant=="cuda"] # TODO: Make sure this is correct for [cu13]
+    #- humming-kernels[cu13] ==0.1.17 # [gpu_variant=="cuda"] # TODO: Make sure this is correct for [cu13]
     # pynvvideocodec is optional, and must be explicitly selected by a user (if available) in order to use it.
     # There are fallbacks (torchcodec/opencv)
     #- pynvvideocodec Optional depenency
@@ -293,7 +297,7 @@ requirements:
     #- quack-kernels Optional Dependency
 
   # The optional dependencies from above are run constraints here
-  run_constrained:               # [gpu_variant=="cuda"]
+  run_constrained:
     - tokenspeed-mla ==0.2.15    # [gpu_variant=="cuda"]
     - humming-kernels ==0.1.17   # [gpu_variant=="cuda"]
     - pynvvideocodec ==2.0.4     # [gpu_variant=="cuda"]
@@ -305,13 +309,15 @@ requirements:
     # instanttensor is in requirements/cuda.txt, but it appears to be optional.
     - instanttensor >=0.2.2 # [gpu_variant=="cuda"]
 
-    # Additional run_constrained from setup.py 
+    # Additional run_constrained from setup.py
+    # FIXME: Verify the below packages are still in setup.py; verify the versions
     - tensorizer ==2.10.1
     - fastsafetensors >=0.3.2
     - instanttensor >=0.1.9
     - runai-model-streamer >=0.15.7
     - smg-grpc-servicer >=0.5.2
     - vllm-gguf-plugin >=0.0.2
+    
 
     # We don't currently have this package on main, but it is listed as an extra dependency in setup.py
     # If we ever add the package to main, it will probably have a different package name due to

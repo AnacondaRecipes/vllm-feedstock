@@ -1,7 +1,7 @@
-From d1d1689968fb2683dcd2de6d2819f1b9e68c5ce4 Mon Sep 17 00:00:00 2001
+From 02e766a2acc6620f971547406e529cbe57844dc3 Mon Sep 17 00:00:00 2001
 From: Andrew Howe <ahowe@anaconda.com>
-Date: Fri, 23 Oct 2026 21:50:37 -0400
-Subject: [PATCH 6/6] updating requirements
+Date: Thu, 29 Oct 2026 13:29:24 -0400
+Subject: [PATCH] updating requirements
 
 Some of the requirements need to be updated to work in the conda
 environment.
@@ -15,6 +15,8 @@ environment.
    slightly on naming conventions.
  * update triton requirements. Removing links to the wheels and reducing
    to a single line
+ * update setuptools pin. Pinning to exactly 78.1.1 is for upstream CI
+   convenience and is overly strict.
 For CUDA builds:
  * remove packages that are not strictly required, but there
    are reduced capabilities when they are not present. The removal
@@ -27,15 +29,21 @@ For CUDA builds:
    * pynvvideocodec
    * instanttensor
 ---
- requirements/cpu.txt  |  7 +++----
+ requirements/cpu.txt  |  9 ++++-----
  requirements/cuda.txt | 20 +++++++++++++-------
- 2 files changed, 16 insertions(+), 11 deletions(-)
+ 2 files changed, 17 insertions(+), 12 deletions(-)
 
 diff --git a/requirements/cpu.txt b/requirements/cpu.txt
-index 0570517e74..f0deb5e0e5 100644
+index 0570517e74..0bb50d5207 100644
 --- a/requirements/cpu.txt
 +++ b/requirements/cpu.txt
-@@ -6,7 +6,7 @@ setuptools==78.1.1 # this version can reuse CMake build dir; >=78.1.1 for GHSA-5
+@@ -1,12 +1,12 @@
+ # Common dependencies
+ -r common.txt
+ 
+-setuptools==78.1.1 # this version can reuse CMake build dir; >=78.1.1 for GHSA-5rjg-fvgr-3xxf
++setuptools>=78.1.1 # >=78.1.1 for GHSA-5rjg-fvgr-3xxf
+ 
  numba == 0.65.0 # Required for N-gram speculative decoding
  
  # Dependencies for CPUs

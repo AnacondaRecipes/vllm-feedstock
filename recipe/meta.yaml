@@ -102,7 +102,7 @@ build:
   # does not support windows, and only supports CUDA on x86-64
   # Does not currently support osx due to xgrammar dependency.
   # Skipping CUDA 3.14 builds due to lack of support from vendored FlashAttention version
-  skip: true  # [py<310 or py>314 or (gpu_variant=="cuda" and py>=314) or ((osx or aarch64) and gpu_variant=="cuda") or win or osx]
+  skip: true  # [py<311 or py>314 or (gpu_variant=="cuda" and py>=314) or ((osx or aarch64) and gpu_variant=="cuda") or win or osx]
   entry_points:
     - vllm = vllm.entrypoints.cli.main:main
   string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [gpu_variant == "cpu"]
@@ -208,7 +208,7 @@ requirements:
     - partial-json-parser
     - pyzmq >=25.0.0
     - msgspec
-    - mistral-common >=1.11.5
+    - mistral-common >=1.11.6
     - opencv >=4.13.0=*headless*  # required for video IO
     - pyyaml
     - six >=1.16.0  # [py>311]

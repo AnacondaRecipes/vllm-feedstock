@@ -20,6 +20,8 @@ if [[ "${gpu_variant}" == "cuda" ]]; then
     export FLASH_MLA_SRC_DIR=$SRC_DIR/flashmla-src
     export QUTLASS_SRC_DIR=$SRC_DIR/qutlass-src
     export FMHA_SM100_SRC_DIR=$SRC_DIR/msa-src
+    export DEEPSELECT_SRC_DIR=$SRC_DIR/deepselect-src
+    export FLASH_KDA_SRC_DIR=$SRC_DIR/flashkda-src
     export TML_FA4_SRC_DIR=$SRC_DIR/tml-fa4-src
     # Must point at the triton_kernels python package directory itself
     export TRITON_KERNELS_SRC_DIR=$SRC_DIR/triton-src/python/triton_kernels/triton_kernels
@@ -45,8 +47,19 @@ if [[ "${gpu_variant}" == "cuda" ]]; then
         echo "Unsupported CUDA compiler version: ${cuda_compiler_version}. Edit build.sh to add target CUDA archs."
         exit 1
     fi
+    # DeepGEMM's setup.py (run by vLLM's tools/build_deepgemm_C.py) only searches ${CUDA_HOME}/include[/cccl] for CUDA
+    # headers. In the conda layout they are under $PREFIX/targets/. This replaces the old
+    # "Use PREFIX for CUDA include paths in DeepGEMM build" patch, which no longer applies because
+    # build_deepgemm_C.py no longer builds the extension itself. UNTESTED: confirm on the first CUDA build.
+    export CPLUS_INCLUDE_PATH="$PREFIX/targets/x86_64-linux/include:$PREFIX/targets/x86_64-linux/include/cccl${CPLUS_INCLUDE_PATH:+:$CPLUS_INCLUDE_PATH}"
     export TORCH_NVCC_FLAGS="-Xfatbin -compress-all"
     export FORCE_CUDA=1
+fi
+
+if [[ "${gpu_variant}" == "cpu" ]]; then
+    # Use the oneDNN source staged in meta.yaml instead of letting cmake git-clone it
+    # (see cmake/cpu_extension.cmake, FETCHCONTENT_SOURCE_DIR_ONEDNN)
+    export FETCHCONTENT_SOURCE_DIR_ONEDNN=$SRC_DIR/onednn-src
 fi
 
 # Proceed with installation

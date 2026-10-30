@@ -1,0 +1,44 @@
+From c36bd76f539e5dab3f42f0b49ffa10c60fb72169 Mon Sep 17 00:00:00 2001
+From: Andrew Howe <ahowe@anaconda.com>
+Date: Fri, 16 Oct 2026 14:27:33 -0400
+Subject: [PATCH 5/6] Guard against missing flashinfer
+
+There is currently no flashinfer on the conda main channel, so
+guard against it being automatically used by surounding the
+import by a try/except. On a failure to import, the code should
+continue working as if flashinfer had been disabled through
+environmnet variable.
+---
+ vllm/v1/sample/ops/topk_topp_sampler.py | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/vllm/v1/sample/ops/topk_topp_sampler.py b/vllm/v1/sample/ops/topk_topp_sampler.py
+index daa94ebc3a..23c93b5b5b 100644
+--- a/vllm/v1/sample/ops/topk_topp_sampler.py
++++ b/vllm/v1/sample/ops/topk_topp_sampler.py
+@@ -98,7 +98,21 @@ def flashinfer_sampler_supported() -> bool:
+             "VLLM_USE_FLASHINFER_SAMPLER=0."
+         )
+         return False
+-    from vllm.v1.attention.backends.flashinfer import FlashInferBackend
++
++    try:
++        from vllm.v1.attention.backends.flashinfer import FlashInferBackend
++    except ImportError as e:
++        if envs.is_set("VLLM_USE_FLASHINFER_SAMPLER"):
++            raise RuntimeError(
++                "FlashInfer top-p/top-k sampling was requested via "
++                "VLLM_USE_FLASHINFER_SAMPLER=1, but flashinfer is not "
++                "installed."
++            ) from e
++        logger.info_once(
++            "flashinfer is not installed; falling back to the PyTorch-native "
++            "top-p/top-k sampler."
++        )
++        return False
+ 
+     capability = current_platform.get_device_capability()
+     assert capability is not None
+-- 
+2.51.0
+

@@ -1,0 +1,25 @@
+From 404fb8b19ff7de7ee981d6217368fcb36e928e7a Mon Sep 17 00:00:00 2001
+From: Andrew Howe <ahowe@anaconda.com>
+Date: Thu, 29 Oct 2026 10:00:15 -0400
+Subject: [PATCH 7/7] Import mcp ClientSession from the top-level mcp package
+
+mcp.client only exports ClientSession in mcp 2.x, while the top-level
+mcp.ClientSession import works in both mcp 1.x and 2.x. The import is only
+used for type annotations, so this has no runtime effect.
+---
+ vllm/entrypoints/openai/responses/context.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/vllm/entrypoints/openai/responses/context.py b/vllm/entrypoints/openai/responses/context.py
+index 9f5a281..190960d 100644
+--- a/vllm/entrypoints/openai/responses/context.py
++++ b/vllm/entrypoints/openai/responses/context.py
+@@ -45,7 +45,7 @@ from vllm.tokenizers import TokenizerLike
+ from vllm.utils import random_uuid
+ 
+ if TYPE_CHECKING:
+-    from mcp.client import ClientSession
++    from mcp import ClientSession
+ 
+     from vllm.v1.metrics.stats import RequestStateStats
+ 

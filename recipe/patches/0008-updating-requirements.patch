@@ -1,0 +1,112 @@
+From 02e766a2acc6620f971547406e529cbe57844dc3 Mon Sep 17 00:00:00 2001
+From: Andrew Howe <ahowe@anaconda.com>
+Date: Thu, 29 Oct 2026 13:29:24 -0400
+Subject: [PATCH] updating requirements
+
+Some of the requirements need to be updated to work in the conda
+environment.
+ * remove intel-openmp python requirement. This will be handled
+   through the conda environment: The conda intel-openmp package
+   does not install itself in the python environment, so pip check
+   for intel-openmp will fail if this python requirement is
+   specified, even though the required files are available in
+   the conda environment.
+ * update torch package name. The PyPI and main/pkgs channel differ
+   slightly on naming conventions.
+ * update triton requirements. Removing links to the wheels and reducing
+   to a single line
+ * update setuptools pin. Pinning to exactly 78.1.1 is for upstream CI
+   convenience and is overly strict.
+For CUDA builds:
+ * remove packages that are not strictly required, but there
+   are reduced capabilities when they are not present. The removal
+   is due to them not being available on the main channel
+   * flashinfer-python
+   * nvidia-cutlass-dsl
+   * quack-kernels
+   * tokenspeed-mla
+   * humming-kernels
+   * pynvvideocodec
+   * instanttensor
+---
+ requirements/cpu.txt  |  9 ++++-----
+ requirements/cuda.txt | 20 +++++++++++++-------
+ 2 files changed, 17 insertions(+), 12 deletions(-)
+
+diff --git a/requirements/cpu.txt b/requirements/cpu.txt
+index 0570517e74..0bb50d5207 100644
+--- a/requirements/cpu.txt
++++ b/requirements/cpu.txt
+@@ -1,12 +1,12 @@
+ # Common dependencies
+ -r common.txt
+ 
+-setuptools==78.1.1 # this version can reuse CMake build dir; >=78.1.1 for GHSA-5rjg-fvgr-3xxf
++setuptools>=78.1.1 # >=78.1.1 for GHSA-5rjg-fvgr-3xxf
+ 
+ numba == 0.65.0 # Required for N-gram speculative decoding
+ 
+ # Dependencies for CPUs
+-torch==2.13.0+cpu; platform_machine == "x86_64" or platform_machine == "s390x" or platform_machine == "aarch64"
++torch==2.13.0; platform_machine == "x86_64" or platform_machine == "s390x" or platform_machine == "aarch64"
+ torch==2.13.0; platform_system == "Darwin" or platform_machine == "ppc64le" or platform_machine == "riscv64"
+ 
+ # required for the image processor of minicpm-o-2_6, this must be updated alongside torch
+@@ -19,11 +19,10 @@ torchvision; platform_machine != "riscv64"
+ torchcodec >= 0.14; platform_machine != "riscv64" and platform_machine != "ppc64le"
+ 
+ # Intel Extension for PyTorch, only for x86_64 CPUs
+-intel-openmp==2024.2.1; platform_machine == "x86_64"
++# intel-openmp dependency for this package is managed through conda environment, not pip
+ 
+ # triton-cpu, only for x86_64 CPUs
+-triton @ https://github.com/triton-lang/triton-cpu/releases/download/v3.8.0/triton-3.8.0+cpu-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl ; platform_machine == "x86_64" and python_version == "3.11"
+-triton @ https://github.com/triton-lang/triton-cpu/releases/download/v3.8.0/triton-3.8.0+cpu-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl ; platform_machine == "x86_64" and python_version >= "3.12"
++triton ; platform_machine == "x86_64"
+ 
+ # Use this to gather CPU info and optimize based on ARM Neoverse cores
+ py-cpuinfo; platform_machine == "aarch64"
+diff --git a/requirements/cuda.txt b/requirements/cuda.txt
+index 3ac70a5374..3622af5224 100644
+--- a/requirements/cuda.txt
++++ b/requirements/cuda.txt
+@@ -9,8 +9,9 @@ torchaudio==2.11.0
+ # These must be updated alongside torch
+ torchvision==0.28.0 # Required for phi3v processor. See https://github.com/pytorch/vision?tab=readme-ov-file#installation for corresponding version
+ torchcodec >= 0.14
+-PyNvVideoCodec==2.0.4
+-flashinfer-python==0.7.0.post1
++#PyNvVideoCodec==2.0.4
++# flashinfer is not strictly required, though there are reduce capabilities when it isn't available.
++#flashinfer-python==0.7.0.post1
+ apache-tvm-ffi==0.1.11
+ tilelang==0.1.12
+ nvidia-cudnn-frontend>=1.19.1
+@@ -18,14 +19,19 @@ nvidia-cudnn-frontend>=1.19.1
+ nvtx==0.2.15
+ # Required for faster safetensors model loading
+ fastsafetensors >= 0.3.3
+-instanttensor >= 0.2.2
++#instanttensor >= 0.2.2
+ 
+ # QuACK and Cutlass DSL for FA4 (cute-DSL implementation)
+-nvidia-cutlass-dsl[cu13]==4.8.0
+-quack-kernels==0.6.5  # Required by MSA
++# These are not strictly required, though FlashAttention4 support is not available
++# when they aren't present.
++#nvidia-cutlass-dsl[cu13]==4.8.0
++#quack-kernels==0.6.5  # Required by MSA
+ 
+ # Tokenspeed_MLA for faster mla with spec decode
+-tokenspeed-mla==0.2.15; platform_system == "Linux"
++# Tokenspeed-mla is not needed for every use case. It is an optimization
++# for MLA workloads, which already have fallbacks.
++#tokenspeed-mla==0.2.15; platform_system == "Linux"
+ 
+ # Humming kernels for quantization gemm
+-humming-kernels[cu13]==0.1.17
++# Not strictly required, but reduced capabilities when not present
++#humming-kernels[cu13]==0.1.17
+-- 
+2.51.0
+

@@ -25,14 +25,15 @@ source:
       - patches/0009-Remove-extra-args-from-CPU-compute-slot-mapping-kernel.patch
       #- patches/0006-Use-PREFIX-for-CUDA-include-paths-in-DeepGEMM-build.patch
       
-  - url: https://github.com/vllm-project/flash-attention/archive/caaa4eb59845388a20b1f435ecaafb4bd9517ad8.tar.gz
-    sha256: bc680ffb076b7f0ea3ff851772622acea950e69f3731f9f5fdeb8887f7dabf2c
+  # cmake/external_projects/vllm_flash_attn.cmake
+  - url: https://github.com/vllm-project/flash-attention/archive/9cd61de38763d712bb6ce56e2a02cc2bf718c89f.tar.gz
+    sha256: b0dcc13a7e4d5ed4bf69f092d7eb50c1b80de76a4e33315a722c893f9488ab9d
     folder: flash-attention
   # cutlass is a git submodule of flash-attention (not included in GitHub tarballs)
   - url: https://github.com/NVIDIA/cutlass/archive/62750a2b75c802660e4894434dc55e839f322277.tar.gz
     sha256: 78816d6c6d97793b5b59ef2a702174cb85b78dfcefc8fe2489964de2e42f17d2
     folder: flash-attention/csrc/cutlass
-  # vLLM's CMakeLists.txt (CUTLASS_REVISION) pins v4.4.2. It needs the full source tree
+  # vLLM's CMakeLists.txt (CUTLASS_REVISION) pins v4.7.1. It needs the full source tree
   # (python/ for Machete generation, examples/ for CUTLASS MLA), so the conda cutlass
   # package can't be used.
   - url: https://github.com/NVIDIA/cutlass/archive/refs/tags/v4.7.1.tar.gz
@@ -47,27 +48,24 @@ source:
   # commit each parent repo pins.
 
   # cmake/external_projects/deepgemm.cmake
-  - url: https://github.com/vllm-project/DeepGEMM/archive/727f847082d2e7946f70dc02b94949db206310d3.tar.gz
-    sha256: d629535cea3ad1297a380de76f0f39d0d405409d97f8f71e016e137462f2fcc8
+  - url: https://github.com/vllm-project/DeepGEMM/archive/1e1842a833699298f7afc02eefb2ed168fff6938.tar.gz
+    sha256: bded2f76d129e403142e15c80175871c53c39478229a7ee01474623cabd1d965
     folder: deepgemm-src
   - url: https://github.com/NVIDIA/cutlass/archive/f3fde58372d33e9a5650ba7b80fc48b3b49d40c8.tar.gz
     sha256: 2e5890306557bd87136e1d6914e4ee42536050b9116433848175520fd15991f2
     folder: deepgemm-src/third-party/cutlass
-  # FIXME: Double check that deep_jit is necessary. It was vendored in for v0.26.0, but looks
-  #        like it might be for the vllm v0.32.0 updates.
+  # deep_jit is a git submodule of DeepGEMM (deepgemm.cmake: GIT_SUBMODULES "third-party/cutlass" "third-party/deep_jit").
+  # It replaced the fmt submodule that DeepGEMM used at the vLLM v0.26.0 pin.
   - url: https://github.com/deepseek-ai/DeepJIT/archive/3732a3b9a0a2e5126396908a362ba5abdf043b2f.tar.gz
     sha256: 436ebe903967adbebd6f60697b3ac36b991727d667c845cd83376f62138fe41e
     folder: deepgemm-src/third-party/deep_jit
-  # - url: https://github.com/fmtlib/fmt/archive/553ec11ec06fbe0beebfbb45f9dc3c9eabd83d28.tar.gz
-  #   sha256: c314292789d28c3c3b420e75a7b2d1706f685f7fb63289128d46aeaea2c6be71
-  #   folder: deepgemm-src/third-party/fmt
 
   # cmake/external_projects/flashmla.cmake
-  - url: https://github.com/vllm-project/FlashMLA/archive/e2afa5fd8c220fbd05fe03fc24c9d5e64c24641b.tar.gz
-    sha256: 4577d85f4938bde55aebca43a5f090eaa67873b57672bbdcaebc6ed17e34bc2e
+  - url: https://github.com/vllm-project/FlashMLA/archive/0eee43b12f034b657133cf2afca6a72ebb6efccf.tar.gz
+    sha256: b5f44e67b555d9a1603338e0a1631850fb368d5f826c0cc76d86f7af90a09b3e
     folder: flashmla-src
-  - url: https://github.com/NVIDIA/cutlass/archive/4faf1a1568cf1e4ad8ff71846a13e16f2a6a6f6b.tar.gz
-    sha256: 50a017597cb76ab5dfe15a2419dd445010aef731b5ff9354e8da6543de204b23
+  - url: https://github.com/NVIDIA/cutlass/archive/147f5673d0c1c3dcf66f78d677fd647e4a020219.tar.gz
+    sha256: 9f6c53320a85b4a570975e557918cde65168cd311f081920446c238437347dc6
     folder: flashmla-src/csrc/cutlass
 
   # cmake/external_projects/qutlass.cmake
@@ -81,8 +79,8 @@ source:
   - url: https://github.com/vllm-project/MSA/archive/968061ab16cb14991a5c7d4c0e8eabf531be0dcf.tar.gz
     sha256: 13bd3949621aece2ed49aa59028190ef15fa989ecaac641e148ed5574796dc21
     folder: msa-src
-  - url: https://github.com/NVIDIA/cutlass/archive/eb61c911471867a5fd2466bfd8f29306cea6ebf8.tar.gz
-    sha256: ffe392246cc3517017c4b91d14bbcb28aae28d26d1847b333371eb13bfec52eb
+  - url: https://github.com/NVIDIA/cutlass/archive/098de2a652cf8f00fd70b2df54051c7eccbb855a.tar.gz
+    sha256: a8a1b952c7f6179bc8076f20d45859f18bd81f21f3d22b6766d7f3f0cceb5d54
     folder: msa-src/python/fmha_sm100/cutlass
 
   # cmake/external_projects/tml_fa4.cmake

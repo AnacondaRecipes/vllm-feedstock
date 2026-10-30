@@ -20,6 +20,8 @@ if [[ "${gpu_variant}" == "cuda" ]]; then
     export FLASH_MLA_SRC_DIR=$SRC_DIR/flashmla-src
     export QUTLASS_SRC_DIR=$SRC_DIR/qutlass-src
     export FMHA_SM100_SRC_DIR=$SRC_DIR/msa-src
+    export DEEPSELECT_SRC_DIR=$SRC_DIR/deepselect-src
+    export FLASH_KDA_SRC_DIR=$SRC_DIR/flashkda-src
     export TML_FA4_SRC_DIR=$SRC_DIR/tml-fa4-src
     # Must point at the triton_kernels python package directory itself
     export TRITON_KERNELS_SRC_DIR=$SRC_DIR/triton-src/python/triton_kernels/triton_kernels

@@ -93,9 +93,21 @@ source:
     sha256: 03d7c41f6f2dc1dfa3445776c4a893dc34b1e0ece42b953f036c071ff6409b80
     folder: triton-src
 
-  # FIXME: There are also deepselect.cmake and flashkda.cmake in the cmake/external_projects/ directory.
-  #        Do these need to be downloaded as well, or can they be skipped for this build? If they need
-  #        to be vendored in, try to download them like the list of projects above.
+  # cmake/external_projects/deepselect.cmake
+  - url: https://github.com/vllm-project/DeepSelect/archive/d96d33afe1fab0d6066da49cdc91e64c2bee65ea.tar.gz
+    sha256: 88b9c40522bc361417c77e22447b406dffef27e1230f495279a30734c05ef6a4
+    folder: deepselect-src
+  - url: https://github.com/NVIDIA/cutlass/archive/ae6bccf341fb4410241f696ba06873023d5ce4ed.tar.gz
+    sha256: 02249181f05f09f174545a9a722df23a5d0d59e458a99c06257e4172adbe01ad
+    folder: deepselect-src/csrc/3rdparty/cutlass
+
+  # cmake/external_projects/flashkda.cmake
+  - url: https://github.com/vllm-project/FlashKDA/archive/17a037d98da546deb4591e967cf961a43c034d8b.tar.gz
+    sha256: 0dffba6f8bfc0724d46276d606c1322813d4cd63584de7f14ddb63317973fd3c
+    folder: flashkda-src
+  - url: https://github.com/NVIDIA/cutlass/archive/5c149f52a436782210263fb2f19b354443a61c6a.tar.gz
+    sha256: fbf35b9d16a3c2c7384a4a044a5407d1dea334d74b3152357c1fa246bc07c6dc
+    folder: flashkda-src/cutlass
 
 build:
   # does not support windows, and only supports CUDA on x86-64

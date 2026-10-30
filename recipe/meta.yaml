@@ -88,6 +88,19 @@ source:
     sha256: efa621ccf26407e686e5bac07476350aa1f2f3aaa175a4975b97455aeba6ffca
     folder: tml-fa4-src
 
+  # oneDNN is fetched at build time by the CPU build and statically linked into the _C*.so extensions.
+  # Version info: cmake/cpu_extension.cmake in the vllm source, in the "Build oneDNN for GEMM kernels"
+  # block (search for "oneDNN" / FetchContent_Declare):
+  #   x86-64:  GIT_TAG v3.13
+  #   aarch64: GIT_TAG 9c5be1cc59e368aebf0909e6cf20f981ea61462a  (pinned commit; ACL is skipped via VLLM_SKIP_ACL)
+  # build.sh points cmake at the staged copy with FETCHCONTENT_SOURCE_DIR_ONEDNN. Re-check on every version bump.
+  - url: https://github.com/oneapi-src/oneDNN/archive/refs/tags/v3.13.tar.gz  # [x86_64 and gpu_variant=="cpu"]
+    sha256: f90a34cc3f1a5af511570d72f4437205efdf97e1d28c576418daa7ef1a34daaa  # [x86_64 and gpu_variant=="cpu"]
+    folder: onednn-src  # [x86_64 and gpu_variant=="cpu"]
+  - url: https://github.com/oneapi-src/oneDNN/archive/9c5be1cc59e368aebf0909e6cf20f981ea61462a.tar.gz  # [aarch64 and gpu_variant=="cpu"]
+    sha256: b15611c536b32c119b5acc600b69f5971ff3276badaf434c2790c1f59585bf98  # [aarch64 and gpu_variant=="cpu"]
+    folder: onednn-src  # [aarch64 and gpu_variant=="cpu"]
+
   # cmake/external_projects/triton_kernels.cmake (DEFAULT_TRITON_KERNELS_TAG)
   - url: https://github.com/triton-lang/triton/archive/refs/tags/v3.5.1.tar.gz
     sha256: 03d7c41f6f2dc1dfa3445776c4a893dc34b1e0ece42b953f036c071ff6409b80

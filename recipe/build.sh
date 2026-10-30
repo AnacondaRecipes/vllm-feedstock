@@ -51,6 +51,12 @@ if [[ "${gpu_variant}" == "cuda" ]]; then
     export FORCE_CUDA=1
 fi
 
+if [[ "${gpu_variant}" == "cpu" ]]; then
+    # Use the oneDNN source staged in meta.yaml instead of letting cmake git-clone it
+    # (see cmake/cpu_extension.cmake, FETCHCONTENT_SOURCE_DIR_ONEDNN)
+    export FETCHCONTENT_SOURCE_DIR_ONEDNN=$SRC_DIR/onednn-src
+fi
+
 # Proceed with installation
 $PYTHON -m pip install . -vv --no-deps --no-build-isolation
 

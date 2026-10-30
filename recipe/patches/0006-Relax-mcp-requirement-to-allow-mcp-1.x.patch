@@ -7,12 +7,22 @@ huggingface_hub 1.x declares mcp<2.0.0 in its optional 'mcp' extra, which
 conda packaging turns into a run_constrained entry. Requiring mcp>=2.0
 therefore makes vllm and huggingface_hub impossible to install together.
 
-vLLM only uses mcp.ClientSession and mcp.client.sse.sse_client, plus
-attributes of the InitializeResult, ListToolsResult and CallToolResult
-objects, all of which are available in both mcp 1.x and 2.x.
+vLLM uses mcp.ClientSession and mcp.client.sse.sse_client, plus attributes
+of the InitializeResult, ListToolsResult and CallToolResult objects. The
+classes and functions are available in both mcp 1.x and 2.x, but mcp 2.x
+renamed some model attributes from camelCase to snake_case:
+
+  mcp 1.x:  Tool.inputSchema   InitializeResult.serverInfo
+  mcp 2.x:  Tool.input_schema  InitializeResult.server_info
+
+tool_server.py only used the 2.x names, so MCPToolServer.add_tool_server()
+and post_process_tools_description() raised AttributeError on mcp 1.x. Look
+up whichever attribute name exists. CallToolResult.content[0].text, used in
+context.py, is the same in both versions.
 ---
- requirements/common.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ requirements/common.txt             |    2 +-
+ vllm/entrypoints/mcp/tool_server.py |   21 ++++++++++++++++++---
+ 2 files changed, 19 insertions(+), 4 deletions(-)
 
 diff --git a/requirements/common.txt b/requirements/common.txt
 index 094b751..a22e9d3 100644
@@ -27,3 +37,51 @@ index 094b751..a22e9d3 100644
  opentelemetry-sdk >= 1.27.0
  opentelemetry-api >= 1.27.0
  opentelemetry-exporter-otlp >= 1.27.0
+diff --git a/vllm/entrypoints/mcp/tool_server.py b/vllm/entrypoints/mcp/tool_server.py
+--- a/vllm/entrypoints/mcp/tool_server.py
++++ b/vllm/entrypoints/mcp/tool_server.py
+@@ -55,12 +55,27 @@
+     return schema
+ 
+ 
++def _input_schema_attr(tool) -> str:
++    # mcp 2.x exposes snake_case attributes (input_schema); mcp 1.x uses the
++    # camelCase protocol names (inputSchema).
++    return "input_schema" if hasattr(tool, "input_schema") else "inputSchema"
++
++
++def _server_name(initialize_response) -> str:
++    # mcp 2.x: server_info; mcp 1.x: serverInfo
++    info = getattr(initialize_response, "server_info", None)
++    if info is None:
++        info = initialize_response.serverInfo
++    return info.name
++
++
+ def post_process_tools_description(
+     list_tools_result: "ListToolsResult",
+ ) -> "ListToolsResult":
+     # Adapt the MCP tool result for Harmony
+     for tool in list_tools_result.tools:
+-        tool.input_schema = trim_schema(tool.input_schema)
++        attr = _input_schema_attr(tool)
++        setattr(tool, attr, trim_schema(getattr(tool, attr)))
+ 
+     # Some tools schema don't need to be part of the prompt (e.g. simple text
+     # in text out for Python)
+@@ -118,13 +133,13 @@
+             list_tools_response = post_process_tools_description(list_tools_response)
+ 
+             tool_from_mcp = ToolNamespaceConfig(
+-                name=initialize_response.server_info.name,
++                name=_server_name(initialize_response),
+                 description=initialize_response.instructions,
+                 tools=[
+                     ToolDescription.new(
+                         name=tool.name,
+                         description=tool.description,
+-                        parameters=tool.input_schema,
++                        parameters=getattr(tool, _input_schema_attr(tool)),
+                     )
+                     for tool in list_tools_response.tools
+                 ],

@@ -404,6 +404,8 @@ about:
   license: Apache-2.0 AND BSD-3-Clause AND MIT
   license_file:
     - LICENSE
+    # vllm/third_party/flash_linear_attention is bundled in the sdist and installed (MIT)
+    - vllm/third_party/flash_linear_attention/LICENSE
     - flash-attention/LICENSE
     - flash-attention/csrc/cutlass/LICENSE.txt
     - cutlass-src/LICENSE.txt
@@ -418,6 +420,14 @@ about:
     - msa-src/python/fmha_sm100/cutlass/LICENSE.txt
     - tml-fa4-src/LICENSE
     - triton-src/LICENSE
+    - deepselect-src/LICENSE
+    - deepselect-src/csrc/3rdparty/cutlass/LICENSE.txt
+    - flashkda-src/LICENSE
+    - flashkda-src/cutlass/LICENSE.txt
+    # oneDNN is statically linked into the CPU extensions. THIRD-PARTY-PROGRAMS carries the notices
+    # for its bundled xbyak (BSD-3-Clause), ittnotify (GPL-2.0-only OR BSD-3-Clause, used as BSD-3-Clause), spdlog (MIT), etc.
+    - onednn-src/LICENSE  # [gpu_variant=="cpu"]
+    - onednn-src/THIRD-PARTY-PROGRAMS  # [gpu_variant=="cpu"]
   license_family: Other
   doc_url: https://docs.vllm.ai/en/latest/usage/
   dev_url: https://github.com/vllm-project/vllm

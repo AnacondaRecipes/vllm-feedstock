@@ -23,7 +23,6 @@ source:
       - patches/0007-Import-mcp-ClientSession-from-the-top-level-mcp-pack.patch
       - patches/0008-updating-requirements.patch
       - patches/0009-Remove-extra-args-from-CPU-compute-slot-mapping-kernel.patch
-      #- patches/0006-Use-PREFIX-for-CUDA-include-paths-in-DeepGEMM-build.patch
       
   # cmake/external_projects/vllm_flash_attn.cmake
   - url: https://github.com/vllm-project/flash-attention/archive/9cd61de38763d712bb6ce56e2a02cc2bf718c89f.tar.gz
@@ -142,6 +141,7 @@ build:
 
 requirements:
   build:
+    - {{ compiler('c') }}        # oneDNN (statically linked into the CPU build) compiles C sources (ittnotify)
     - {{ compiler('cxx') }}      # Ensures a C++ compiler is available
     - {{ stdlib('c') }}
     - {{ compiler('cuda') }}     # [gpu_variant=="cuda"]
@@ -178,13 +178,6 @@ requirements:
     - libcurand-dev                                # [gpu_variant == "cuda"]
     - libcusolver-dev                              # [gpu_variant == "cuda"]
     - libcusparse-dev                              # [gpu_variant == "cuda"]
-
-    # The vendored deepgemm needs pybind11 headers to build.
-    # version selected to match python-abi version needed as a transitive
-    # runtime dependency.
-    # NOTE 10/28/2026 it looks like pybind might have been removed from this build of deep gemm.
-    #                 Verify this before releasing.
-    #- pybind11 =2.13   # [gpu_variant=="cuda"]
 
     # for sys_mem_monitor.py:
     - psutil

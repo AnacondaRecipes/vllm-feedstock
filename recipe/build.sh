@@ -47,6 +47,11 @@ if [[ "${gpu_variant}" == "cuda" ]]; then
         echo "Unsupported CUDA compiler version: ${cuda_compiler_version}. Edit build.sh to add target CUDA archs."
         exit 1
     fi
+    # DeepGEMM's setup.py (run by vLLM's tools/build_deepgemm_C.py) only searches ${CUDA_HOME}/include[/cccl] for CUDA
+    # headers. In the conda layout they are under $PREFIX/targets/. This replaces the old
+    # "Use PREFIX for CUDA include paths in DeepGEMM build" patch, which no longer applies because
+    # build_deepgemm_C.py no longer builds the extension itself. UNTESTED: confirm on the first CUDA build.
+    export CPLUS_INCLUDE_PATH="$PREFIX/targets/x86_64-linux/include:$PREFIX/targets/x86_64-linux/include/cccl${CPLUS_INCLUDE_PATH:+:$CPLUS_INCLUDE_PATH}"
     export TORCH_NVCC_FLAGS="-Xfatbin -compress-all"
     export FORCE_CUDA=1
 fi

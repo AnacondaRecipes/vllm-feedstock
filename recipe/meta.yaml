@@ -363,6 +363,9 @@ test:
   imports:
     - vllm
     - pip
+    # Touch the code paths that the mcp patches (0006, 0007) modify
+    - vllm.entrypoints.mcp.tool_server
+    - vllm.entrypoints.openai.responses.context
 
   commands:
     - pip list

@@ -179,11 +179,14 @@ requirements:
     - libcusolver-dev                              # [gpu_variant == "cuda"]
     - libcusparse-dev                              # [gpu_variant == "cuda"]
 
+    # headers are needed to build vendored deep_jit
+    - elfutils                                     # [gpu_variant == "cuda"]
+
     # for sys_mem_monitor.py:
-    - psutil
-    - pyyaml
-    - matplotlib
-    - pandas
+    #- psutil
+    #- pyyaml
+    #- matplotlib
+    #- pandas
 
   run:
 

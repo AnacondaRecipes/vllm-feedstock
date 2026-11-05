@@ -1,7 +1,7 @@
-From 02e766a2acc6620f971547406e529cbe57844dc3 Mon Sep 17 00:00:00 2001
+From d38fa270a2fe848d7197cfc13e0a5dc08082acdd Mon Sep 17 00:00:00 2001
 From: Andrew Howe <ahowe@anaconda.com>
 Date: Thu, 29 Oct 2026 13:29:24 -0400
-Subject: [PATCH] updating requirements
+Subject: [PATCH 8/9] updating requirements
 
 Some of the requirements need to be updated to work in the conda
 environment.
@@ -34,7 +34,7 @@ For CUDA builds:
  2 files changed, 17 insertions(+), 12 deletions(-)
 
 diff --git a/requirements/cpu.txt b/requirements/cpu.txt
-index 0570517e74..0bb50d5207 100644
+index 0570517e74..4a4a3afcc1 100644
 --- a/requirements/cpu.txt
 +++ b/requirements/cpu.txt
 @@ -1,12 +1,12 @@

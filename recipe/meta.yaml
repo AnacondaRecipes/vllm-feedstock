@@ -22,6 +22,10 @@ source:
       - patches/0006-Relax-mcp-requirement-to-allow-mcp-1.x.patch
       - patches/0007-Import-mcp-ClientSession-from-the-top-level-mcp-pack.patch
       - patches/0008-updating-requirements.patch
+      # Patch 0009 applies https://github.com/vllm-project/vllm/pull/61992 to the 0.32.0
+      # build. This patch was originally applied to vllm after the release of 0.32.0, but
+      # it is needed for this conda package due to some failing tests that this patch fixes.
+      # Remove this patch for subsequent vllm >=0.33.0 releases.
       - patches/0009-Remove-extra-args-from-CPU-compute-slot-mapping-kernel.patch
       
   # cmake/external_projects/vllm_flash_attn.cmake
@@ -182,12 +186,6 @@ requirements:
     # headers are needed to build vendored deep_jit
     - elfutils                                     # [gpu_variant == "cuda"]
 
-    # for sys_mem_monitor.py:
-    #- psutil
-    #- pyyaml
-    #- matplotlib
-    #- pandas
-
   run:
 
     - python
@@ -205,7 +203,7 @@ requirements:
     - huggingface_hub >=1.31.0
     - tokenizers >=0.23.2
     - safetensors >=0.6.2
-    # upstream requirement is protobuf >=5.29.6, witch a bunch of specific versions excluded, all of
+    # upstream requirement is protobuf >=5.29.6, which a bunch of specific versions excluded, all of
     # which are below 6.33.5.
     - protobuf >=6.33.5
     - fastapi >=0.133.0,<0.137.0
@@ -278,7 +276,7 @@ requirements:
 
     # from cuda.txt
     - __cuda   # [gpu_variant == "cuda"]
-    - cuda-version =={{ cuda_compiler_version }}   # [gpu_variant == "cuda"]
+    - cuda-version {{ cuda_compiler_version }}   # [gpu_variant == "cuda"]
     - llvm-openmp # [ gpu_variant=="cuda"]
     # pytorch is in cuda.txt and cpu.txt
     
@@ -330,13 +328,14 @@ requirements:
     - instanttensor >=0.2.2 # [gpu_variant=="cuda"]
 
     # Additional run_constrained from setup.py
-    # FIXME: Verify the below packages are still in setup.py; verify the versions
     - tensorizer ==2.10.1
-    - fastsafetensors >=0.3.2
-    - instanttensor >=0.1.9
-    - runai-model-streamer >=0.15.7
+    - fastsafetensors >=0.3.3
+    - instanttensor >=0.2.2 # [gpu_variant=="cpu"]
+    - runai-model-streamer >=0.17.1
     - smg-grpc-servicer >=0.5.2
     - vllm-gguf-plugin >=0.0.2
+    - b12x ==1.5.1
+    - zentorch ==2.14.0.2
     
 
     # We don't currently have this package on main, but it is listed as an extra dependency in setup.py

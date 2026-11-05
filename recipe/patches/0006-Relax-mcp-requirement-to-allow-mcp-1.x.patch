@@ -1,7 +1,7 @@
-From c4e5b3a324a27587aed43f17201e1b0cc1de7893 Mon Sep 17 00:00:00 2001
+From 1db1365dbae8e8a12c52713c1264fda9e4ec8823 Mon Sep 17 00:00:00 2001
 From: Andrew Howe <ahowe@anaconda.com>
 Date: Thu, 29 Oct 2026 10:00:15 -0400
-Subject: [PATCH 6/7] Relax mcp requirement to allow mcp 1.x
+Subject: [PATCH 6/9] Relax mcp requirement to allow mcp 1.x
 
 huggingface_hub 1.x declares mcp<2.0.0 in its optional 'mcp' extra, which
 conda packaging turns into a run_constrained entry. Requiring mcp>=2.0
@@ -20,12 +20,12 @@ and post_process_tools_description() raised AttributeError on mcp 1.x. Look
 up whichever attribute name exists. CallToolResult.content[0].text, used in
 context.py, is the same in both versions.
 ---
- requirements/common.txt             |    2 +-
- vllm/entrypoints/mcp/tool_server.py |   21 ++++++++++++++++++---
+ requirements/common.txt             |  2 +-
+ vllm/entrypoints/mcp/tool_server.py | 21 ++++++++++++++++++---
  2 files changed, 19 insertions(+), 4 deletions(-)
 
 diff --git a/requirements/common.txt b/requirements/common.txt
-index 094b751..a22e9d3 100644
+index 094b751139..a22e9d34c1 100644
 --- a/requirements/common.txt
 +++ b/requirements/common.txt
 @@ -51,7 +51,7 @@ setproctitle # Used to set process names for better debugging and monitoring
@@ -38,9 +38,10 @@ index 094b751..a22e9d3 100644
  opentelemetry-api >= 1.27.0
  opentelemetry-exporter-otlp >= 1.27.0
 diff --git a/vllm/entrypoints/mcp/tool_server.py b/vllm/entrypoints/mcp/tool_server.py
+index a0fe518f2d..7bedaa9bb4 100644
 --- a/vllm/entrypoints/mcp/tool_server.py
 +++ b/vllm/entrypoints/mcp/tool_server.py
-@@ -55,12 +55,27 @@
+@@ -55,12 +55,27 @@ def trim_schema(schema: dict) -> dict:
      return schema
  
  
@@ -69,7 +70,7 @@ diff --git a/vllm/entrypoints/mcp/tool_server.py b/vllm/entrypoints/mcp/tool_ser
  
      # Some tools schema don't need to be part of the prompt (e.g. simple text
      # in text out for Python)
-@@ -118,13 +133,13 @@
+@@ -118,13 +133,13 @@ class MCPToolServer(ToolServer):
              list_tools_response = post_process_tools_description(list_tools_response)
  
              tool_from_mcp = ToolNamespaceConfig(
@@ -85,3 +86,6 @@ diff --git a/vllm/entrypoints/mcp/tool_server.py b/vllm/entrypoints/mcp/tool_ser
                      )
                      for tool in list_tools_response.tools
                  ],
+-- 
+2.51.0
+

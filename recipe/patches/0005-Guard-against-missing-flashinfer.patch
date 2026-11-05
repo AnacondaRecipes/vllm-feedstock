@@ -1,7 +1,7 @@
-From c36bd76f539e5dab3f42f0b49ffa10c60fb72169 Mon Sep 17 00:00:00 2001
+From 8204b0ca26425473f373b14d46a44f41831b2867 Mon Sep 17 00:00:00 2001
 From: Andrew Howe <ahowe@anaconda.com>
 Date: Fri, 16 Oct 2026 14:27:33 -0400
-Subject: [PATCH 5/6] Guard against missing flashinfer
+Subject: [PATCH 5/9] Guard against missing flashinfer
 
 There is currently no flashinfer on the conda main channel, so
 guard against it being automatically used by surounding the

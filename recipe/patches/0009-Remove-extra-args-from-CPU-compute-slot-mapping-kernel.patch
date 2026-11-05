@@ -1,8 +1,8 @@
-From 556ac15eb930875693acc5489cf860ac509708a9 Mon Sep 17 00:00:00 2001
+From a3bc3fb9bbb528adddac925cc3129b8edafd8c83 Mon Sep 17 00:00:00 2001
 From: Fadi Arafeh <115173828+fadara01@users.noreply.github.com>
 Date: Sat, 17 Oct 2026 05:11:33 +0100
-Subject: [PATCH] [Bugfix] Remove extra args from CPU's compute slot mapping
- kernel (#61992)
+Subject: [PATCH 9/9] Remove extra args from CPU's compute slot mapping kernel
+ (#61992)
 
 Backport of vllm-project/vllm#61992, merged after the v0.32.0 release was
 cut. The CPU replacement for the Triton compute_slot_mapping kernel took
@@ -16,11 +16,11 @@ Drop this patch when updating to a release that contains the fix.
 Signed-off-by: Fadi Arafeh <fadi.arafeh@arm.com>
 Co-authored-by: vllm-agent <claw@inferact.ai>
 ---
- vllm/utils/cpu_triton_utils.py | 8 +-------
+ vllm/utils/cpu_triton_utils.py | 8 ++------
  1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/vllm/utils/cpu_triton_utils.py b/vllm/utils/cpu_triton_utils.py
-index d8e4cd389d30..3950e4c2ac4a 100644
+index d8e4cd389d..3950e4c2ac 100644
 --- a/vllm/utils/cpu_triton_utils.py
 +++ b/vllm/utils/cpu_triton_utils.py
 @@ -16,10 +16,8 @@ def _compute_slot_mapping_kernel_impl(
@@ -51,3 +51,6 @@ index d8e4cd389d30..3950e4c2ac4a 100644
      )
  
  
+-- 
+2.51.0
+

@@ -1,7 +1,7 @@
-From 0e7c1f4ca435587ef61a8bb338bba9b1680e19f9 Mon Sep 17 00:00:00 2001
+From 2662458adcb4417b307c9622078b3a1cee4cd4ad Mon Sep 17 00:00:00 2001
 From: "Uwe L. Korn" <uwe.korn@quantco.com>
 Date: Thu, 25 Jun 2026 10:32:25 +0200
-Subject: [PATCH 4/6] Allow skipping ACL via VLLM_SKIP_ACL env var
+Subject: [PATCH 4/9] Allow skipping ACL via VLLM_SKIP_ACL env var
 
 ---
  cmake/cpu_extension.cmake | 5 +++++

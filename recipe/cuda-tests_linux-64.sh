@@ -71,12 +71,17 @@ hf cache list
 # tests/multimodal/test_video.py::test_video_processor_from_model_repo[qwen3vl]
 # tests/multimodal/test_video.py::test_video_processor_from_model_repo[qwen2vl]
 # tests/multimodal/test_video.py::test_video_processor_from_model_repo[qwen2_5_vl]
+# tests/multimodal/test_video.py::test_video_processor_from_model_repo[minimax_m3_vl]
+# Deselecting the PyNvVideoCodec tests that need the real module: PyNvVideoCodec is optional
+# (run_constrained) and not packaged on main. The mock-based pynvvideocodec tests still run.
+# tests/multimodal/test_video.py::test_pynvvideocodec_corrupted_videos_raise_value_error
+# tests/multimodal/test_video.py::test_pynvvideocodec_h200_recovers_after_unsupported_8k
 # av package not available for python 3.10, so skip the av tests in that case
 if python -c "import sys; exit(0 if sys.version_info.major != 3 or sys.version_info.minor <= 10 else 1)"; then
    echo "Must skip pyav tests"
    pyav_tests="or pyav or test_torchcodec_backend_returns_target_frames_not_keyframes"
 fi
-time pytest -v -s tests/multimodal/test_video.py -k "not ($expanded_skip_models or test_video_processor_from_model_repo[glm4v] or test_video_processor_from_model_repo[glm46v] or test_video_processor_from_model_repo[qwen3vl] or test_video_processor_from_model_repo[qwen2vl] or test_video_processor_from_model_repo[qwen2_5_vl] $pyav_tests)"
+time pytest -v -s tests/multimodal/test_video.py -k "not ($expanded_skip_models or test_video_processor_from_model_repo[glm4v] or test_video_processor_from_model_repo[glm46v] or test_video_processor_from_model_repo[qwen3vl] or test_video_processor_from_model_repo[qwen2vl] or test_video_processor_from_model_repo[qwen2_5_vl] or test_video_processor_from_model_repo[minimax_m3_vl] or test_pynvvideocodec_corrupted_videos_raise_value_error or test_pynvvideocodec_h200_recovers_after_unsupported_8k $pyav_tests)"
 hf cache list
 
 # run the whole samplers directory minus a few tests

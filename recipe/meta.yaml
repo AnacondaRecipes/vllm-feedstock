@@ -2,9 +2,7 @@
 {% set version = "0.32.0" %}
 {% set build_num = 0 %}
 
-{% if gpu_variant =="cuda" %}
-{% set build_num = 200 + build_num %}
-{% endif %}
+ {% set build_num = build_num + 200 if gpu_variant == "cuda" else build_num %}
 
 package:
   name: {{ name|lower }}
@@ -184,7 +182,7 @@ requirements:
     - libcusparse-dev                              # [gpu_variant == "cuda"]
 
     # headers are needed to build vendored deep_jit
-    - elfutils                                     # [gpu_variant == "cuda"]
+    - elfutils {{ elfutils }}                      # [gpu_variant == "cuda"]
 
   run:
 
@@ -330,12 +328,17 @@ requirements:
     # Additional run_constrained from setup.py
     - tensorizer ==2.10.1
     - fastsafetensors >=0.3.3
+    # listing instant tensor separately for CPU and CUDA because upstream lists it as optional for
+    # CPU and required for CUDA. It is not actually required for CUDA, and we don't yet have it
+    # on the main channel. If we make it for the main channel, the CPU will remain in run_constrained,
+    # but the cuda restriction will move to the run requirements.
     - instanttensor >=0.2.2 # [gpu_variant=="cpu"]
-    - runai-model-streamer >=0.17.1
+    - runai-model-streamer >=0.15.7
     - smg-grpc-servicer >=0.5.2
     - vllm-gguf-plugin >=0.0.2
     - b12x ==1.5.1
-    - zentorch ==2.14.0.2
+    - zentorch ==2.13.0.1
+    - helion ==1.4.0
     
 
     # We don't currently have this package on main, but it is listed as an extra dependency in setup.py

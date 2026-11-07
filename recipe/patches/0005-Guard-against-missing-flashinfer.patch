@@ -1,7 +1,7 @@
-From 8809b385eed2958272a090c896275b27463f8c7c Mon Sep 17 00:00:00 2001
+From 8204b0ca26425473f373b14d46a44f41831b2867 Mon Sep 17 00:00:00 2001
 From: Andrew Howe <ahowe@anaconda.com>
 Date: Fri, 16 Oct 2026 14:27:33 -0400
-Subject: [PATCH] Guard against missing flashinfer
+Subject: [PATCH 5/9] Guard against missing flashinfer
 
 There is currently no flashinfer on the conda main channel, so
 guard against it being automatically used by surounding the
@@ -13,10 +13,10 @@ environmnet variable.
  1 file changed, 15 insertions(+), 1 deletion(-)
 
 diff --git a/vllm/v1/sample/ops/topk_topp_sampler.py b/vllm/v1/sample/ops/topk_topp_sampler.py
-index 0f3dc79b98..d5147a81e0 100644
+index daa94ebc3a..23c93b5b5b 100644
 --- a/vllm/v1/sample/ops/topk_topp_sampler.py
 +++ b/vllm/v1/sample/ops/topk_topp_sampler.py
-@@ -41,7 +41,21 @@ def flashinfer_sampler_supported() -> bool:
+@@ -98,7 +98,21 @@ def flashinfer_sampler_supported() -> bool:
              "VLLM_USE_FLASHINFER_SAMPLER=0."
          )
          return False

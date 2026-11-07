@@ -1,18 +1,18 @@
 gpu_variant:
-  #- cpu 
-  - cuda
-  - cuda
+  - cpu 
+  - cuda # [linux and not aarch64]
+  - cuda # [linux]
 
 cuda_compiler_version:
-  #- None
-  - 12.9
-  - 13.0
+  - None
+  - 12.9 # [linux and not aarch64]
+  - 13.0 # [linux]
 
 pytorch:
-  - 2.11
+  - 2.13
 
 libtorch:
-  - 2.11
+  - 2.13
 
 zip_keys:
   -
